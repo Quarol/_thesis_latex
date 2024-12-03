@@ -1,0 +1,14 @@
+\begin{table}[H]
+\centering
+\caption{Definicja metryk generowanych podczas testów detekcji obiektów.}
+\begin{tabular}{|>{\centering\arraybackslash}m{2cm}|>{\centering\arraybackslash}m{2cm}|>{\centering\arraybackslash}m{2cm}|>{\centering\arraybackslash}m{7.5cm}|}
+\hline
+\textbf{Metryka} & \textbf{Obiekty na nagraniu} & \textbf{Obiekty wykryte przez detektor} & \textbf{Opis} \\ \hline
+\multirow{2}{*}{TP} & \multirow{2}{*}{x} & x & Detektor wykrył jeden bądź wiele obiektów klasy $x$, gdy obiekt $x$ był obecny. \\ \cline{3-4}
+ &  & n*x & Detektor wykrył kilka wystąpień obiektu $x$ w obecności tego obiektu. \\ \hline
+TN & $\emptyset$ & $\emptyset$ & Detektor nie wykrył żadnego obiektu klasy $x$, gdy obiekt $x$ nie był obecny. \\ \hline
+\multirow{2}{*}{FP} & $\emptyset$ & x & Detektor wykrył jeden lub więcej obiektów klasy $x$, mimo że obiekt $x$ nie był obecny. \\ \cline{2-4}
+ & $\emptyset$ & n*x & Detektor wykrył kilka fałszywych wystąpień klasy $x$, gdy żaden obiekt $x$ nie był obecny. \\ \hline
+FN & x & $\emptyset$ & Detektor nie wykrył żadnego obiektu klasy $x$, mimo że obiekt $x$ był obecny. \\ \hline
+\end{tabular}
+\end{table}

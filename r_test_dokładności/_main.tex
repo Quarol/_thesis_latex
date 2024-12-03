@@ -1,0 +1,24 @@
+\chapter{Testy możliwości detekcji obiektów}
+Rozdział ten opisuje autorskie testy dokładności detekcji obiektów w zależności od różnych czynników. Testowanym zadaniem jest dokładność klasyfikacji obiektów. Nie zaimplementowano testów dokładności dla lokalizacji przestrzennej, ponieważ nie jest ona priorytetem w niniejszym systemie. Uznano, iż jakościowe stwierdzenie możliwości lokalizacji w fazie tworzenia systemu jest wystarczające, a efekt uznano za zadowalający. 
+
+Zaimplementowane dwa testy skuteczności klasyfikacji to:
+\begin{enumerate}
+    \item Test pojedyńczej klasy obiektu przy użyciu różnych metryk na przykładzie klasy \emph{człowiek} (ang. \emph{person}). 
+    \item  Test poziomu generalizacji modelu w scenariuszu obecności różnych wariantów obiektu wchodzących w skład tej samej klasy. Test na przykładzie klasy \emph{krzesło} (ang. \emph{chair}) i użytych wariantów: krzesło kuchenne, krzesło gamingowe. 
+\end{enumerate}
+    
+
+Rozdział ten wpierw porusza kwestie współdzielone przez oba testy takie jak źródło wideo i pobranie z niego wyników użytych do analizy w posczególnym scenariuszu. Następnie opisane zostaną już koknkretne scenariusze.
+ 
+Uwaga dotycząca zamieszconych rysunków: w rysunkach przedstawiających człowieka twarz została zamazana.
+
+
+\section{Przygotowanie danych do testów}
+\input{r_test_dokładności/wspolna}
+
+\section{Test 1}
+\input{r_test_dokładności/test_czlowiek}
+
+\section{Test 2}
+\input{r_test_dokładności/test_krzeslo}
+

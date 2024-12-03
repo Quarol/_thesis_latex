@@ -1,0 +1,63 @@
+\begin{lstlisting}[caption={Funkcja generująca metryki do testów}, label={lst:generate_accuracy_results}]
+def test(video_path, occurence_ranges, tested_ranges, tested_class, conf_threshold):
+    video_capture.end_capture()
+    video_capture.start_capture(video_path)
+    yolo_inference_config.set_confidence_threshold(conf_threshold)
+
+    true_positive = 0
+    true_negative = 0
+    false_positive = 0
+    false_negative = 0
+
+    frame_counter = 0
+    
+
+    while True:
+        ret, frame = video_capture.get_frame()
+        if ret is None or ret == False:
+            break
+        frame_counter += 1
+
+        if not is_in_range(tested_ranges, frame_counter):
+            continue
+
+        results = image_processor.detect_objects(frame)
+        boxes = results.boxes
+        detected_objects = []
+
+        for box in boxes:
+            object_class_id = image_processor._get_object_class_id(box)
+            object_class_name = yolo_settings.get_class_name(object_class_id)
+            detected_objects.append(object_class_name)
+
+        if is_in_range(occurence_ranges, frame_counter):
+            # True Positive
+            # 1) present: X detect: X
+            # 2) present: X detect: X*n
+            if len(detected_objects) >= 1 and \
+                  tested_class in detected_objects:
+                true_positive += 1
+
+            # False Negative:
+            # 1) present: X detect: nothing
+            else:
+                false_negative += 1
+
+
+        # if not is_in_range(occurence_ranges, frame_counter):
+        else:
+            # False Positive:
+            # 1) present: nothing detect: X
+            # 2) present: nothing detect: X*n
+            if len(detected_objects) >= 1 and \
+                  tested_class in detected_objects:
+                false_positive += 1
+
+            # True Negative:
+            # 1) present: nothing detect: nothing
+            else:
+                true_negative += 1
+    
+
+    return true_positive, true_negative, false_positive, false_negative
+\end{lstlisting}

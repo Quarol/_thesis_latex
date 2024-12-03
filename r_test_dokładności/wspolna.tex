@@ -1,0 +1,53 @@
+\subsection{Żródło wideo}
+Źródło wideo to nagrane w domowych warunkach, autorskie, krótkie filmy. Zostały one użyte do generacji danych potrzebnych do analizy w testach.
+Filmy zostały nagrane na kamerze o rozdzielczości 640x480 pikseli. Obiektyw kamery jest statycznie usytuowany w tej samej lokalizacji dla każdego filmu. Obiektyw jest skierowany na wejście do pomieszczenia, w którym kamera się znajduje. Wygląd pomieszczenia jest przedstawiony na ryskunku \ref{fig:test-dokladnosc-scena}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{r_test_dokładności/vid_pics/1_1.png}
+    \caption{Pomieszczenie, w którym nagrano filmy.}
+    \label{fig:test-dokladnosc-scena}
+\end{figure}
+
+\input{r_test_dokładności/tabele/all_objects_grid}
+Filmy można podzielić na trzy kategorie ze względu na różne obecne w nim obiekty (wizualizacja objektów: rysunek \ref{fig:all_objects}):
+\begin{itemize}
+    \item człowiek
+    \item człowiek, krzesło
+    \item człowiek, fotel dla graczy (dalej nazywanym fotelem)
+\end{itemize}
+Krzesło oraz fotel to obiekty, z perspektywy filmów, statyczne --- przez całą długość filmu, na których występują, są one umieszczone w jednej lokalizacji, a inne obiekty nie mają z nimi fizycznej integracji.
+Natomiast człowiek jest obiektem ruchomym. Jest on nieobecny przez pierwszą część każdego filmu. W drugiej części przechodzi on przez próg pomieszczenia, przybliża się do pewnego punktu w obiektywie i na koniec filmu robi jeden pełen obrót w okół własnej osi. 
+
+Należy podkreślić ważne kwestie dotyczące nagranych filmów:
+\begin{itemize}
+    \item Obecne obiekty nie wchodzą ze sobą w integrację --- człowiek podczas ruchu, nie zasłania konturów krzesła oraz fotela.
+    \item Generacja danych do testów nie odbywała się na każdej klatcę nagranego filmu. Użyto tylko klatek przedstawiających pełny kontur obiektów. Pełny kontur pojawia się w momencie przekroczenia progu wejścia do pomieszczenia. Użyto więc dwóch sekcji każdego filmu:
+    \begin{itemize}
+        \item Sekcja gdy człowiek był całkowicie nieobecny.
+        \item Sekcja od moment przekroczenia progu.
+    \end{itemize}
+\end{itemize}
+
+Dla każdej kategorii filmu nagrano cztery warianty z różnym poziomem oświetlenia w pomieszczeniu, co daje łącznie dwanaście plików wideo do analizy. Wizualne różnice między poziomami przedstawiono na rysunku \ref{fig:person_grid} (człowiek), rysunku \ref{fig:chair_grid} (człowiek, krzesło) i rysunku \ref{fig:game_grid} (człowiek, fotel). 
+Dla każdego filmu, korzystając z modelu przestrzeni barw HSV, obliczono średnią jasność oraz saturacje filmu. Wartości te zaprezentowano w tabeli \ref{tab:saturation-value-table}. Obliczenia przeprowadzono poprzez wyznaczenie średniej wartości jasności oraz saturacji dla każdej klatki obrazu na podstawie wszystkich pikseli, a następnie wyznaczając średnią z uzyskanych wartości dla wszystkich klatek w filmie.
+\input{r_test_dokładności/tabele/jasnosc_saturacja}
+\input{r_test_dokładności/tabele/person_grid}
+\input{r_test_dokładności/tabele/chair_grid}
+\input{r_test_dokładności/tabele/game_grid}
+
+
+
+
+
+
+
+\subsection{MEtryki}
+Na podstawie opisanych dwunastu plików wideo wygenerowano dane do analizy w testach dla każdego z nich. Dane te to podstawowe metryki używane w klasyfikacji binarnej. Są to: wynik prawdziwy pozytywny (TP), wynik prawdziwy negatywny (TN), wynik fałszywy pozytywny (FP), Wynik fałszywy negatywny (FN). Zaprojektowane testy nie analizują klasyfikacji pod kątem całej sceny (wszystkich obecnych objektów), lecz indywidualnie dla każdej klasy obiektów. Biorąc to pod uwagę, definicję metryk skontruowano następująco: \\\\ \noindent
+Znaczenie skrótów: \\
+x -- pojedyńcze wystąpienie obiektu wykrywanej klasy \\
+n*x -- wielokrotne wystąpienie obiektu wykrywanej klasy \\
+$\emptyset$ -- brak wystąpienia obiektu wykrywanej klasy 
+\input{r_test_dokładności/tabele/opis_metryk}
+adasdasdas
+
