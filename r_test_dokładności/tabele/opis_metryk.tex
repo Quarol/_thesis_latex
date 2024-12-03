@@ -3,18 +3,27 @@
     \caption{Definicja metryk generowanych podczas testów detekcji obiektów.}
     \begin{tabular}{|c|c|c|c|}
     \hline
+
     Metryka & Obiekty na nagraniu & Obiekty wykryte przez detektor & Opis \\ \hline
 
 
+
     \multirow{2}{*}{TP} & \multirow{2}{*}{x} & x & \multirow{2}{*}{Detektor wykrył jeden bądź wiele obiektów klasy $x$ gdy obiekt $x$ był obecny.} \\ \cline{3-3}
+
     & & n*x & \\ \hline
 
+
     TN & $\emptyset$ & $\emptyset$ & Detektor nie wykrył żadnego obiektu klasy $x$ gdy obiekt $x$ nie był obecny. \\ \hline
-
-    \multirow{2}{*}{FP} & $\emptyset$ & x & \multirow{2}{*}{Detektor wykrył jeden bądź wiele obiektów klasy $x$ gdy obiekt $x$ nie był obecny} \\ \cline{2-3}
-    & $\emptyset$ & n*x & \\ \hline
-
-    FN & x & $\emptyset$ & Detektor nie wykrył żadnego obiektu klasy $x$ gdy obiekt $x$ był obecny. \\ \hline
     
+
+
+    \multirow{2}{*}{FP} & \multirow{2}{*}{$\emptyset$} & x & \multirow{2}{*}{Detektor wykrył jeden bądź wiele obiektów klasy $x$ gdy obiekt $x$ nie był obecny.} \\ \cline{3-3}
+
+    & & n*x & \\ \hline
+
+
+    
+    FN & x & $\emptyset$ & Detektor nie wykrył żadnego obiektu klasy $x$ gdy obiekt $x$ był obecny. \\ \hline
+
     \end{tabular}
 \end{table}
