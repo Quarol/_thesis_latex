@@ -42,12 +42,13 @@ Dla każdego filmu, korzystając z modelu przestrzeni barw HSV, obliczono średn
 
 
 
-\subsection{MEtryki}
-Na podstawie opisanych dwunastu plików wideo wygenerowano dane do analizy w testach dla każdego z nich. Dane te to podstawowe metryki używane w klasyfikacji binarnej. Są to: wynik prawdziwy pozytywny (TP), wynik prawdziwy negatywny (TN), wynik fałszywy pozytywny (FP), Wynik fałszywy negatywny (FN). Zaprojektowane testy nie analizują klasyfikacji pod kątem całej sceny (wszystkich obecnych objektów), lecz indywidualnie dla każdej klasy obiektów. Biorąc to pod uwagę, definicję metryk skontruowano następująco: \\\\ \noindent
-Znaczenie skrótów: \\
+\subsection{Metryki}
+Na podstawie opisanych dwunastu plików wideo wygenerownao dane do analizy w testach dla każdego z nich. Dane te to podstawowe metryki używane w klasyfikacji binarnej. Są to: wynik prawdziwy pozytywny (TP), wynik prawdziwy negatywny (TN), wynik fałszywy pozytywny (FP), wynik fałszywy negatywny (FN). Zaprojektowane testy sprawdzają tylko jedną klase na test --- np. dla ewaluacji klasyfikacji dla klasy \emph{człowiek}, ignorowane są wykrycia innych klas. Biorąc to pod uwagę, definicję metryk skontruowano następująco: \\ \\ \noindent
+Znaczenie skrótów z tabeli \ref{tab:saturation-value-table}: \\
+$\emptyset$ -- brak wystąpienia obiektu wykrywanej klasy \\
 x -- pojedyńcze wystąpienie obiektu wykrywanej klasy \\
-n*x -- wielokrotne wystąpienie obiektu wykrywanej klasy \\
-$\emptyset$ -- brak wystąpienia obiektu wykrywanej klasy 
+n*x -- wielokrotne wystąpienie obiektu wykrywanej klasy
 \input{r_test_dokładności/tabele/opis_metryk}
-adasdasdas
+
+
 
