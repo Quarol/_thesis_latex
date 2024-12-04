@@ -3,22 +3,25 @@ Rozdział ten opisuje autorskie testy dokładności detekcji obiektów w zależn
 
 Zaimplementowane dwa testy skuteczności klasyfikacji to:
 \begin{enumerate}
-    \item Test pojedyńczej klasy obiektu przy użyciu różnych metryk na przykładzie klasy \emph{człowiek} (ang. \emph{person}). 
-    \item  Test poziomu generalizacji modelu w scenariuszu obecności różnych wariantów obiektu wchodzących w skład tej samej klasy. Test na przykładzie klasy \emph{krzesło} (ang. \emph{chair}) i użytych wariantów: krzesło kuchenne, krzesło gamingowe. 
+    \item Test dokładności pojedyńczej klasy na przykładzie klasy \emph{człowiek} (ang. \emph{person}). 
+    \item  Test poziomu generalizacji modelu dla różnych wariantów obiektu wchodzących w skład tej samej klasy. Analiza przeprowadzona na przykładzie klasy \emph{krzesło} (ang. \emph{chair}) i użytych wariantów: krzesło kuchenne, krzesło gamingowe (dalej nazywane fotelem). 
 \end{enumerate}
-    
+W obu testech detektor był skonfigurowany, aby zwracać tylko wyniki zawierające obiekty klas \emph{człowiek} i \emph{krzesło}. Ponadto, każdy test używa filmów z tego samego zbioru nagrań. Dla każdego nagrania wygenerowano pewne metryki, które są wykorzystywane do analizy oraz wyznaczania kolejnych metryk już w konkretnym teście. Oba testy sprawdzają również skutecznośc detektora dla różnych wartośći progu ufności. Wspomniane metryki zostały więc wygenerowane dla każdej wartości progu ufności objętej testem. Wartość progu sprawdzono od $0.00$, aby następnie rosnąć co interwał $0.01$, aż do maksymalnej wartości $1.00$. Daje to łącznie sto jeden sprawdzonych wartości. Generacje metryk zaprogramowano jako test odizolowanego detektora od reszty systemu, ze względu na łatwość i czytelność implementacyjną oraz brak zależności dokładności detekcji od czynników systemowych (w przeciwnieśtwie do szybkośći).  
 
-Rozdział ten wpierw porusza kwestie współdzielone przez oba testy takie jak źródło wideo i pobranie z niego wyników użytych do analizy w posczególnym scenariuszu. Następnie opisane zostaną już koknkretne scenariusze.
+Biorąc pod uwagę tę strukturę, rodział ten wpierw porusza kwestie współdzielone przez oba testy w sekcji \ref{sec:test-wspoldzielony}, a następnie opisuję dalszą analize w sekcjach \ref{sec:test-1} i \ref{sec:test-2}.
  
 Uwaga dotycząca zamieszconych rysunków: w rysunkach przedstawiających człowieka twarz została zamazana.
 
 
 \section{Przygotowanie danych do testów}
+\label{sec:test-wspoldzielony}
 \input{r_test_dokładności/wspolna}
 
-\section{Test 1}
+\section{Test dokładności pojedyńczej klasy}
+\label{sec:test-1}
 \input{r_test_dokładności/test_czlowiek}
 
-\section{Test 2}
+\section{Test poziomu generalizacji modelu dla różnych wariantów obiektu wchodzących w skład tej samej klasy}
+\label{sec:test-2}
 \input{r_test_dokładności/test_krzeslo}
 
