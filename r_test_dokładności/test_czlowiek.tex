@@ -1,5 +1,11 @@
-\subsection{Ewaluacja modelu dla różnych poziomów oświetlenia na bazie wartośći AUC}
+Niniejszy podrozdział przedstawia różne badania, których celem jest ewaluacja klasyfikacji YOLOv8n na przykładzie klasy człowiek. Model zbadano pod kątem wpływu jak manipulacja poziomem oświetlenia oraz progu ufności przekłada się na jego wyniki. Dla każdego zmierzonego progu ufności wyznaczane będą metryki potrzebne do zobrazowania wniosków. Będą one liczone na podstawie poprzednio uzyskanych metryk --- TP, TN, FP i FN. Do testu wykrzystano cztery filmy. Każdy z nich przedstawia wyłącznie człowieka. Wartości jasności i nasycenia przedstawiono w tabeli \ref{tab:saturacja-jasnosc-czlowiek}. Wygląd nagranego pomieszczenia dla różnych poziomów oświetlenia ukazano na rysunku \ref{fig:person_grid}. 
+
+\input{r_test_dokładności/tabele/jasnosc_czlowiek.tex}
+
+
+\subsection{Ewaluacja modelu dla różnych poziomów oświetlenia}
 \label{sec:test-AUC}
+W celu zobrazowania i oceniania wyniku modelu zastosowano metrykę 
 
 \begin{figure}[H]
     \centering
@@ -32,7 +38,11 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{r_test_dokładności/AUC_charts/porownanieAUC.png}
-    \caption{Wykres porównujący wartości AUC dla wszystkich poziomów jasności.}
+    \caption{Wykres porównujący wartości AUC dla zbadanych poziomów jasności.}
     \label{fig:AUC}
 \end{figure}
+
+
+
+\subsection{Analiza wpływu progu ufności na wyniki detekcji}
 

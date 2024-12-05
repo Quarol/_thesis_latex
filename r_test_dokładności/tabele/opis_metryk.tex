@@ -1,28 +1,31 @@
 \begin{table}[H]
     \centering
     \caption{Definicja metryk generowanych podczas testów detekcji obiektów.}
-    \begin{tabular}{|>{\centering\arraybackslash}m{2cm}|>{\centering\arraybackslash}m{2cm}|>{\centering\arraybackslash}m{2.5cm}|>{\raggedright\arraybackslash}m{7.5cm}|}
+    
+    \begin{tabular}{|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|>{\raggedright\arraybackslash}m{7.5cm}|>
+    {\centering\arraybackslash}m{1.5cm}|}
     \hline
-    Metryka & Obiekty na nagraniu & Obiekty wykryte przez detektor & \multicolumn{1}{c|}{Opis} \\ \hline
+
+    Metryka & Obiekty na nagraniu & Obiekty wykryte przez detektor & \multicolumn{1}{c|}{Opis} & Czy poprawnie? \\ \cline{1-5}
 
 
 
-    \multirow{2}{*}{TP} & \multirow{2}{*}{x} & x & \multirow{2}{7.5cm}{Detektor wykrył jeden lub więcej obiektów klasy x, gdy obiekt x był obecny.} \\ \cline{3-3}
+    \multirow{2}{*}{TP} & \multirow{2}{*}{x} & x & \multirow{2}{7.5cm}{Detektor wykrył jeden lub więcej obiektów klasy x, gdy obiekt x był obecny.} & \multirow{3}{1.5cm}{Tak} \\ \cline{3-3}
 
-     &  & n*x & \\ \cline{1-4}
+     &  & n*x & & \\ \cline{1-4}
 
 
 
-    TN & $\emptyset$ & $\emptyset$ & Detektor nie wykrył ani jednego obiektu klasy x, gdy obiekt x był nieobecny. \\ \hline
+    TN & $\emptyset$ & $\emptyset$ & Detektor nie wykrył ani jednego obiektu klasy x, gdy obiekt x był nieobecny. & \\ \cline{1-5}
 
     
 
-    \multirow{2}{*}{TN} & \multirow{2}{*}{$\emptyset$} & x & \multirow{2}{7.5cm}{Detektor wykrył jeden lub więcej obiektów klasy x, mimo że obiekt był nieobecny.} \\ \cline{3-3}
+    \multirow{2}{*}{FP} & \multirow{2}{*}{$\emptyset$} & x & \multirow{2}{7.5cm}{Detektor wykrył jeden lub więcej obiektów klasy x, mimo że obiekt był nieobecny.} & \multirow{3}{1.5cm}{Nie} \\ \cline{3-3}
 
-     &  & n*x & \\ \cline{1-4}
+     &  & n*x & & \\ \cline{1-4}
 
 
 
-    FN & x & $\emptyset$ & Detektor nie wykrył ani jednego obiektu klasy x, mimo że obiekt był obecny. \\ \hline
+    FN & x & $\emptyset$ & Detektor nie wykrył ani jednego obiektu klasy x, mimo że obiekt był obecny. & \\ \cline{1-5}
     \end{tabular}
 \end{table}

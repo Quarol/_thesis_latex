@@ -22,15 +22,15 @@ Natomiast człowiek jest obiektem ruchomym. Jest on nieobecny przez pierwszą cz
 Należy podkreślić ważne kwestie dotyczące nagranych filmów:
 \begin{itemize}
     \item Obecne obiekty nie wchodzą ze sobą w integrację --- człowiek podczas ruchu, nie zasłania konturów krzesła oraz fotela.
-    \item Generacja danych do testów nie odbywała się na każdej klatcę nagranego filmu. Użyto tylko klatek przedstawiających pełny kontur obiektów. Pełny kontur pojawia się w momencie przekroczenia progu wejścia do pomieszczenia. Użyto więc dwóch sekcji każdego filmu:
+    \item Generacja danych do testów nie odbywała się na każdej klatcę nagranego filmu. Użyto tylko klatek przedstawiających pełny kontur obiektów. Pełny kontur człowieka pojawia się w momencie przekroczenia progu wejścia do pomieszczenia. Użyto więc dwóch sekcji każdego filmu:
     \begin{itemize}
         \item Sekcja gdy człowiek był całkowicie nieobecny.
         \item Sekcja od moment przekroczenia progu.
     \end{itemize}
 \end{itemize}
 
-Dla każdej kategorii filmu nagrano cztery warianty z różnym poziomem oświetlenia w pomieszczeniu (dalej nazywany poziomem jasności), co daje łącznie dwanaście plików wideo do analizy. Wizualne różnice między poziomami przedstawiono na rysunku \ref{fig:person_grid} (człowiek), rysunku \ref{fig:chair_grid} (człowiek, krzesło) i rysunku \ref{fig:game_grid} (człowiek, fotel). 
-Dla każdego filmu, korzystając z modelu przestrzeni barw HSV, obliczono średnią jasność oraz saturacje filmu. Wartości te zaprezentowano w tabeli \ref{tab:saturation-value-table}. Obliczenia przeprowadzono poprzez wyznaczenie średniej wartości jasności oraz saturacji dla każdej klatki obrazu na podstawie wszystkich pikseli, a następnie wyznaczając średnią z uzyskanych wartości dla wszystkich klatek w filmie.
+Dla każdej kategorii filmu nagrano cztery warianty z różnym poziomem oświetlenia w pomieszczeniu, co daje łącznie dwanaście plików wideo do analizy. Wizualne różnice między poziomami przedstawiono na rysunku \ref{fig:person_grid} (człowiek), rysunku \ref{fig:chair_grid} (człowiek, krzesło) i rysunku \ref{fig:game_grid} (człowiek, fotel). 
+Dla każdego filmu, korzystając z modelu przestrzeni barw HSV, obliczono średnią jasność oraz nasycenie filmu. Wartości te zaprezentowano w tabeli \ref{tab:saturation-value-table}. Obliczenia przeprowadzono poprzez wyznaczenie średniej wartości jasności oraz nasycenia dla każdej klatki obrazu na podstawie wszystkich pikseli, a następnie wyznaczając średnią z uzyskanych wartości dla wszystkich klatek w filmie.
 \input{r_test_dokładności/tabele/jasnosc_saturacja}
 \input{r_test_dokładności/tabele/person_grid}
 \input{r_test_dokładności/tabele/chair_grid}
@@ -57,10 +57,8 @@ Generacja metryk wynikowych odbywa się w następująco:
 \begin{enumerate}
     \item Wybierany jest film.
     \item Dla filmu metryki generowane są dla każdej badanej wartości progu ufności.
-    \item Dla progu ufności analizowana jest każda klatka zawierająca się dwóch sekcjach opisanych w rozdziale \ref{sec:zrodlo_wideo}. Dana klatka jest kategoryzowana do jednej z metryk.
-    \item Metryka wynikowa to liczba sytuacji kiedy klatka obrazu została do niej przypisana.
+    \item Dla progu ufności analizowana jest każda klatka spełniająca wymagania opisane w rozdziale \ref{sec:zrodlo_wideo}. Dana klatka jest kategoryzowana do jednej z metryk.
+    \item Metryka wynikowa to liczba klatek przypisanych do tej metryki.
 \end{enumerate} 
 Przykład wygenerowanych wyników prezentuje tabela \ref{tab:example-generated}.
-
-
 \input{r_test_dokładności/tabele/exaple_results.tex}
