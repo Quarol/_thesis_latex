@@ -1,0 +1,20 @@
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[H]
+    \centering
+    \caption{Jasność i nasycenie dla wszystkich filmów. Pogrubiona czcionka oznacza obiekt należący do analizowanej klasy.}
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    Poziom   oświetlenia & Obecne obiekty                                & Jasność & Nasycenie \\ \hline
+    \multirow{2}{*}{1}   & człowiek,   
+    \textbf{krzesło} & 149.92  & 119.07    \\ \cline{2-4} 
+                         & człowiek, \textbf{fotel}     & 152.68  & 111.47    \\ \hline
+    \multirow{2}{*}{2}   & człowiek,   \textbf{krzesło} & 139.14  & 90.71     \\ \cline{2-4} 
+                         & człowiek, \textbf{fotel}     & 133.77  & 83.29     \\ \hline
+    \multirow{2}{*}{3}   & człowiek,   \textbf{krzesło} & 38.91   & 132.31    \\ \cline{2-4} 
+                         & człowiek, \textbf{fotel}     & 38.12   & 124.31    \\ \hline
+    \multirow{2}{*}{4}   & człowiek,   \textbf{krzesło} & 25.3    & 100.8     \\ \cline{2-4} 
+                         & człowiek, \textbf{fotel}     & 24.88   & 108.5     \\ \hline
+    \end{tabular}
+    \label{tab:jasnosc-krzeslo-fotel}
+    \end{table}
