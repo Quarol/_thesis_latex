@@ -1,0 +1,111 @@
+\section{Szczegóły implementacyjne}
+W sekcji tej opisano implementacje wielowątkowego podejścia architektonicznego. Przedstawiono argumenty za wybraniem tego typu architektury, rozwiazanie problemów przez nią wywoływanych oraz uzasadnienie innych działań zastosowanych w celu poprawy wydajności systemu.  
+
+Pierwsza iteracja oprogramowania była oparta na architekturze jednowątkowej. Sekwencyjnie wykonywano kolejne metody w nieskończonej pętli: pobór klatki z kamery, detekcja obiektów, alarmowanie dźwiękowe, wizualizacja obiektów oraz wyświetlenie klatki w wyświetlaczu graficznego interfejsu użytkownika.
+
+Na tym etapie rodziału warto pochylić się nad działaniem modułu graficznego użytego w klasie \emph{GUI} --- tkinter. 
+Jest on podstawą i jedyną wykorzystywaną technologią w implementacji panelu sterowania. Moduł ten dostarcza graficzne komponenty takie jak suwak, wykorzystany do zmiany progu ufności, przewijaną sekcja z polami wyboru wykrywanych klas obiektów, oraz menu do wyboru źródła wideo. 
+
+Aby móc użytkować interfejs na bazie modułu, wymagane jest wywołanie głównej pętli tkinter (ang .\emph{mainloop}). Pętla opiera się ona na architekturze wydarzeniowej (ang. \emph{event-driven architecture}) działającej w ramach jednego, głównego wątku aplikacji. Poprzez wydarzenie rozumie się zdefiniowaną w module integrację z komponentem np. kliknięcie na przycisk. Zadaniem pętli jest zareagowanie na wydarzenia w sposób zfefiniowany przez moduł (np. wypełnienie przycisku kolorem po kliknięciu) oraz wykonanie kodu, który programista podłączył pod dane wydarzenia (np. wywołanie metody ustawiającej źródło wideo). Przykład na bazie kodu źródłowego pokazano w listingu \ref{lst:tkinter-event-loop}.
+
+
+\begin{lstlisting}[caption={Podłączenie metod pod wydarzenia oraz zainicjalizowanie pętli głównej w module tkinter.}, label={lst:tkinter-event-loop}]
+def GUI:
+    # Metoda tworzaca panel sterowania
+    def _initialize_control_panel(self) -> None:
+        self._root = tk.Tk() # Utworzenie aplikacji (okna) tkinter
+        # Utworzenie menu do wyboru zrodla wideo:
+        self._menubar = tk.Menu(master=self._root)
+        self._root.config(menu=self._menubar)
+        self._initialize_video_source_menu()
+        # reszta kodu metody ...
+
+    # Metoda tworzaca menu z przyciskami do wyboru zrodla wideo 
+    def _initialize_video_source_menu(self) -> None:
+        self._source_menu = tk.Menu(master=self._menubar, tearoff=0)
+        self._selected_video_source_id = tk.IntVar()
+
+        sources = self._frame_generator.get_available_sources()
+        for source_name in sources:
+            # Stworzenie pojedynczego przycisku:
+            self._source_menu.add_radiobutton(
+                label=source_name,
+                variable=self._selected_video_source_id,
+                value=sources[source_name],
+                # Podlaczenia zaprogramowanej funkcji do ustawienia zrodla wideo do wywolania po nacisnieciu przycisku:
+                command=lambda source_index=sources[source_name]: self._on_video_source_select(source_index) 
+            )
+
+        self._selected_video_source_id.set(NO_VIDEO)
+        self._menubar.add_cascade(menu=self._source_menu, label='Video source')
+
+    # Metoda uruchamiajaca GUI (inizjalizuje petle tkinter)
+    def show(self) -> None:
+        # ... kod poprzedzajacy
+        self._root.mainloop()
+        # reszta kodu... (zostanie wykonana po zakonczeniu petli)
+
+\end{lstlisting}
+
+Z perpektywy programistycznej, instrukcje wywołane po instrukcji inicjalizacji zostaną wykonane dopiero po jej zakończeniu -- zamknięciu przez użytkownika okna aplikacji. Generuje to konieczność wywołania sekcji logicznej aplikacji przed rozpoczęciem pętli. Jest to jednak problematyczne, ponieważ sekcja ta musi stać się częścią mechanizmu tej pętli właśnie. Oferowanym rozwiązaniem jest funkcja również zawarta w tkinter -- \emph{after}. Funkcja ta przyjmuje liczbe całkowitą określającą czas w milisekundach, po którym zostanie wykonana metoda przekazana jako drugi argument tej funkcji. 
+
+Użycie \emph{after} nie blokuje wykonania kolejnych instrukcji w kodzie dlatego też może być bezpiecznie użyte w ramach aplikacji tkinter. Zaprogramowanym sposobem użycia jest wywołanie metody do komunikacji z sekcją logiczną \emph{\_update\_frame}. Istotą tego rowiązania jest zawarcie w kodzie tej metody najpierw obsługi sekcji logicznej oraz późniejsze wywołanie tej samej metody przy użyciu funkcji \emph{after}. Nieblokujący mechanizm \emph{after} unika nieskończonej rekurencji prowadzącej do pojawienia się wyjątków pamięciowych systemu operacyjnego. Mechanizm wyświetlania przy użyciu opisanych funkcji opisano w listingu \ref{lst:tkinter-after}.
+
+\begin{lstlisting}[caption={Wyświetlanie klatek obrazu w GUI przy pomocy modułu tkinter.}, label={lst:tkinter-after}]
+AFTER_DELAY = 1 # Czas w milisekundach. Najmniejsze mozliwe ustawienie. 
+class GUI:
+    # Konstruktor klasy
+    def __init__(self, communication_interface: App) -> None:
+        # Ustawienie interfejsu do komunikacji z sekcja logiczna oprogramowania, w tym poboru klatek z kamery:
+        self._communication_interface = communication_interface
+        # reszta kodu ...
+
+    # Metoda do uruchomienia GUI
+    def show(self) -> None:
+        self._root.mainloop() # inicjalizacja petli tkinter
+
+    # Metoda uruchamiana w po ustawieniu kamery w panelu sterowania
+    # Sluzy do rozpoczecia komunikacji z warstwa logiczna w celu poboru klatki do wyswietlenia  
+    def _start_displaying(self) -> None:
+        self._is_displaying = True
+        cv.namedWindow('Display', cv.WINDOW_NORMAL) # Stworzenie okna wyswietlacza
+        cv.moveWindow('Display', 0, 0)
+        self._update_frame()
+
+    # Metoda uruchamiana po zakonczeniu strumienia wideo
+    # Sluzy zakonczeniu wyswietlania (zakonczenie poboru klatek)
+    def _stop_displaying(self) -> None:
+        self._is_displaying = False
+        cv.destroyAllWindows() # Zniszczenie okna wyswietlacza
+
+    def _update_frame(self) -> None:
+        if not self._is_displaying:
+            self._stop_displaying()
+            return
+
+        # Pobranie klatki (frame) oraz informacji o tym czy kamera dalej dziala (is_capture_on):
+        is_capture_on, frame =  self._communication_interface.get_processed_frame()
+
+        if is_capture_on:
+            if frame is not None:
+                self._show_frame(frame)
+            # Jezeli kamera dziala, mechanizm kontunuowany:
+            self._root.after(AFTER_DELAY, self._update_frame)
+        else:
+            self._frame_generator.set_video_source(NO_VIDEO)
+            self._selected_video_source_id.set(NO_VIDEO)
+            self._stop_displaying()
+
+    # Metoda wywolywana do wyswietlania klatki obrazu
+    def _show_frame(self, frame: MatLike) -> None:
+        frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+        cv.imshow('Display', frame) # Wyswietlenie klatki
+\end{lstlisting}
+
+Użycie interfejsu w celu pobrania klatki (\emph{self.\_communication\_interface.get\_processed\_frame()}) pozwoliło oddzielić sposób pozyskania klatki od architektury komunikacyjnej między sekcją GUI, a sekcją logiczną oraz zachować taki sam kod klasy \emph{GUI} dla następnych iteracji systemu. W przypadku iteracji jednowątkowej użycie metody interfejsu wywoływało następującą sekwencję kroków: pobór klatki z kamery; zmniejszenie rozmiaru klatki, tak aby zmieściła się na ekranie komputera; detekcja obiektów; alarmowanie dźwiękowe oraz wizualizacja prostokątów ograniczających w przypadku wykrycia obiektów; zwrócenie przetworzonej klatki obrazu.
+
+Długa sekwencja zadań oraz czasochłonność niektórych operacji (np. detekcji obiektów) blokowała odświeżanie oraz dostęp do funkcji komponentów GUI, czyniąc go oraz cały system nieresposywnym i powolnym. W celu poprawy optymalizacji nie zdecydowano się zmienić ustawionego, minimalnego czasu, po którym następują kolejne wykonania \emph{\_update\_frame}, ponieważ ryzykowano by utratą wiekszej ilości pobieranych klatek -- kluczowych dla alarmowania użytkownika -- pomimo poprawy responsywności interfejsu graficznego.
+
+Pierwszym podjętym krokiem w celu poprawy wersji jednowątkowej było przeniesienie wykonania inferencji (detekcji) z CPU na GPU. Parametr do tego użyty był opisany w rodziale \ref{chap:wprowadzenie-yolo_interjes}. Poprawiło tym znacznie wydajność uzyskania finalnej klatki, aczkolwiek GUI nadal borykało się z problemem responsywności. Postanowiono więc zmienić architekturę na wielowątkową. Podejściem takim osiągniąto zamierzone rezultaty -- GUI osiągneło zadowalający poziom responsywności przy zachowaniu satysfakcjonującej wydajności (opisanej w rozdziale \ref{chap:test-szybkosci}, testów szybkości systemu). 
+
+
