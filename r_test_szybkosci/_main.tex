@@ -15,7 +15,7 @@ Pomiary czasu całkowitego dla zbadanych rozdzielczości kamery przedstawiono w 
 
 Pomiary czasu całkowitego pokazały brak wpływu rozdzielczości kamery na szybkość systemu. Przyczynę takiego zachowania można upatrywać w optymalizacji YOLOv8, bowiem model ten przed rozpoczęciem detekcji skaluje obraz wejściowy do stałego rozmiaru -- do domyślnego rozmiaru lub ustawionego przez programistę parametrem inferencji \emph{imgsz} -- i wykonuje detekcję na przeskalowanym obrazie. Z racji braku opisu w dokumentacji modelu \cite{yolo_docs}, potwierdzenie istnienia tego mechanizmu opisano jako odpowiedź do pytania zadanego na forum, które jest umieszczone razem z repozytorium kodu modelu \cite{github_imgsz}.
 
-Interesującą obserwacją jest również osiągnięcie liczby klatek na sekundę równej FPS kamery. Powodem może być np. przyśpieszone dostarczanie klatek przez samą kamerę.
+Interesującą obserwacją jest również osiągnięcie liczby klatek na sekundę równej FPS kamery. Powodem może być np. wariacja w liczbie realnych klatek na sekundę dostarcznych przez kamerę lub OpenCV (np. powtórzenie odczytu tej samej klatki).
 
 Pomiary czasu całkowitego nie obrazują jednak potencjalnych odchyleń od średniej. Dlatego też postanowiono zilustrować pojedyńcze pomiary. Wykresy punktowe na rysnkach \ref{fig:czas-punktowy1}, \ref{fig:czas-punktowy2} i \ref{fig:czas-punktowy3} przedstawiają te pomiary i zestawiają je wraz z odpowiadającym średnim czasem z tabeli \ref{tab:liczba-klatek}. Aby sprawdzić różnicę w odchyleniach pomiędzy rozdzielczościami, dane z powyżej wspomnianych wykresów scalono na wykresie na ryskunku \ref{fig:czas-punktowy-all}.  
 
