@@ -30,43 +30,43 @@ FPR (ang \emph{false positive rate}) opisuje sytuację odwrotną do TPR --- anal
     \label{eq:FPR}
 \end{equation}
 
-Podsumowując te informacje, ROC ilustruje balans między czułością, a ostrożnością modelu. Do interpretacji krzywej używa się wartości skalarnej AUC. AUC (ang. \emph{area under curve}) jest to pole pod wykresem krzywej ROC. Jest to wartość z przedziału [0, 1]. Im większa wartość, tym lepszy wynik modelu. AUC równa 1 oznacza, że model idealnie wskazuje kiedy model się pojawił oraz nigdy nie produkuje fałszywych wyników gdy obiekt jest nieobecny. Wartość 0.5 określana jest jako wynik uzyskany przez tzw. losowego klasyfikatora (ang. \emph{random classifier}). Losowy klasyfikator definiuje się jako klasyfikator losowo generujący wykrycia bądź nie (zakładając, że prawdopodobieństwo wykrycia to 50\%). Obrazuje się go jako prostą przekątną linia biegnącą od lewego-dolnego rogu wykresu do prawego-górnego. Modele uzyskujące AUC mniejsze niż 0.5 są uznawane zą nieskuteczne. 
-Wykresy dla poziomów kolejnych poziomów oświetlenia przedstawiono na rysunkach \ref{fig:ROC-1}, \ref{fig:ROC-2}, \ref{fig:ROC-3}, \ref{fig:ROC-4}. Porównanie AUC poziomów oświetlenia ukazane jest na wykresie na rysku \ref{fig:AUC}.
+Podsumowując te informacje, ROC ilustruje balans między czułością, a ostrożnością modelu. Do interpretacji krzywej używa się wartości skalarnej AUC. AUC (ang. \emph{area under curve}) jest to pole pod wykresem krzywej ROC. Jest to wartość z przedziału [0, 1]. Im większa wartość, tym lepszy wynik modelu. AUC równa 1 oznacza, że model idealnie wskazuje kiedy obiekt się pojawił oraz nigdy nie produkuje fałszywych wyników gdy obiekt jest nieobecny. Wartość 0.5 określana jest jako wynik uzyskany przez tzw. losowego klasyfikatora (ang. \emph{random classifier}). Losowy klasyfikator definiuje się jako klasyfikator losowo generujący wykrycia bądź nie (zakładając, że prawdopodobieństwo wykrycia to 50\%). Obrazuje się go jako prostą, przekątną linią, biegnącą od lewego-dolnego rogu wykresu do prawego-górnego. Modele uzyskujące AUC mniejsze niż 0.5 są uznawane za nieskuteczne. 
+Wykresy dla poziomów kolejnych poziomów oświetlenia przedstawiono na rysunkach \ref{fig:ROC-1}, \ref{fig:ROC-2}, \ref{fig:ROC-3}, \ref{fig:ROC-4}. Porównanie AUC wszystkich poziomów oświetlenia ukazane jest na wykresie na rysunku \ref{fig:AUC}.
 
 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{r_test_dokładności/AUC_charts/1.png}
-    \caption{Krzywa ROC i wartość AUC dla poziomu jasności nr 1.}
+    \caption{Krzywa ROC i wartość AUC dla poziomu oświetlenia nr 1.}
     \label{fig:ROC-1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{r_test_dokładności/AUC_charts/2.png}
-    \caption{Krzywa ROC i wartość AUC dla poziomu jasności nr 2.}
+    \caption{Krzywa ROC i wartość AUC dla poziomu oświetlenia nr 2.}
     \label{fig:ROC-2}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{r_test_dokładności/AUC_charts/3.png}
-    \caption{Krzywa ROC i wartość AUC dla poziomu jasności nr 3.}
+    \caption{Krzywa ROC i wartość AUC dla poziomu oświetlenia nr 3.}
     \label{fig:ROC-3}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{r_test_dokładności/AUC_charts/4.png}
-    \caption{Krzywa ROC i wartość AUC dla poziomu jasności nr 4.}
+    \caption{Krzywa ROC i wartość AUC dla poziomu oświetlenia nr 4.}
     \label{fig:ROC-4}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{r_test_dokładności/AUC_charts/porownanieAUC.png}
-    \caption{Wykres porównujący wartości AUC dla zbadanych poziomów jasności.}
+    \caption{Wykres porównujący wartości AUC dla zbadanych poziomów oświetlenia.}
     \label{fig:AUC}
 \end{figure}
 
@@ -82,8 +82,8 @@ Jak widać na wykresach na rysunkach \ref{fig:ROC-1} i \ref{fig:ROC-2} model osi
 
 Teoretyczną wartość dla poziomu nr 3 można uznać za dobrą. W praktyce można interpretować ją różnie. Skalarna wartość jest jednak bardzo ogólną metryką i bardzo wiele zależy od konkretnego ustawienia modelu. Wyniki poziomu nr 4 są, tak jak się tego spodziewano, bardzo złe. Pokazuje to, że w takich warunkach oświetleniowych system ten nie powinien zostać użyty. 
 
-Ważną informacją wynikającą z wykresów jest rosnąca natura krzywej ROC. Świadczy to o poprawności badania, gdyż zwiększenie czułości na detekcję obiektu jest sprzężone z generacją wiekszej liczby fałszywych alarmów.
-Pokazuje to też skomplikowianie problemu doboru odpowiedniego progu ufności do zadania. Manipulacja progiem jest związana ze zmianą wartości jednej metryki, a ta z kolei wpływa na drugą.
+Warto podkreślić, iż natura krzywej ROC jest zawsze niemalejąca. Oznacza to, iż zwiększenie czułości na detekcję obiektu jest sprzężone z generacją wiekszej liczby fałszywych alarmów.
+Pokazuje to też skomplikowianie problemu doboru odpowiedniego progu ufności do zadania -- manipulacja progiem jest związana ze zmianą wartości jednej metryki, a ta z kolei wpływa na drugą.
 
 Podsumowując, porównanie to udowodniło spodziewane zachowanie -- coraz gorsze wyniki wraz z pogorszającymi się warunkami oświetlenia, co jest dowodem stabilności modelu. Co więcej, na podstawie krzywej ROC stwierdzono złożoność problemu doboru odpowiedniego progu ufności. Stwierdzono również, że dalsze badania dla poziomu oświetlenia nr 4 są zbędne. Pokazano też, iż system bardzo dobrze sprawdza się w dobrych warunkach oświetlenia. Taki system możnaby użyć  np. w sytuacji kiedy obiektyw kamery jest skierowany na wejście sklepu. Powiadamiałby on pracowników pracujących na zapleczu, że należy obsłużyć klienta. 
 Tak jak to jednak podkreślono, AUC jest bardzo ogólną miarą, więc w celu dogłebszego stwierdzenia użyteczności modelu, należy zbadać jego wyniki w zależności od ustawień systemu (np. progu ufności -- następne badanie). Samo podejście ze stosowaniem krzywej ROC i wartości AUC wzbudza kontrowersje i wątpliwości, opisane np. w pracach \cite{AUC_critique1,AUC_critique2}.
@@ -121,8 +121,8 @@ Na podstawie powyższych wykresów można dostosować próg ufności do tego by 
 
 Zaczynając od analizy poziomu nr 1, próg taki okazał się być bardzo niski -- równy $0.04$. Jest to sytuacja idalna, gdyż udało się uzyskać FP na poziomie 0 ($0\%$) jak i również TP na poziomie 100 ($100\%$). Potwierdza to wnioski z badania w podrozdziale \ref{sec:test-AUC} -- system ten jest bardzo dobrym wyborem do wykorzystania w bardzo dobrych warunkach oświetleniowych.
 
-Przechodząc do poziomu nr 3, w przypadku chęci utrzymania fałszywych alarmów na poziomie $0$ (próg ufności równy $0.09$) orzymany wynik TP to $32$ ($52,46\%$). Jednoznaczne stwierdzenie czy wynik TP jest wystarczający jest niemożliwe. Należałoby się pochylić nad dokładniejszą analizą okoliczności. Na nagranym filmie człowiek przybliża się do kamery na pewną odległość (do tego momentu zawsze twarzą do obiektywu) po czym wykonuje obrót w okół własnej osi.
-Model mógł np. wykryć tylko sytuacje gdy człowiek był skierowany twarzą do obiektywu. Zakładając, że człowiek zawsze będzie skierowany twarzą w kierunku do obiektywu oznacza to, że wynik taki jest satysfakcjonujący, ponieważ model poradził sobie z różnym rozmiarem klasy obiektu na obrazie. Natomiast w przykładowej sytuacji kiedy model nie potrafił wykryć gdy człowiek znajdował się dalej od obiektywu, hipotetyczny mieszkaniec domu nie zostałby poinformowany o napotkanym intruzie, co określa wynik TP jako nieatysfakcjonujący. Bez dalszych badań, po pierwsze, na bardziej zbalansowanym zestawie danych, po drugie, dla badania bardziej konkretnego typu sceny np. z rozróżnieniem na odległość obiektu od kamery nie da się stwierdzić optymalnego progu ufności.
+Przechodząc do poziomu nr 3, w przypadku chęci utrzymania fałszywych alarmów na poziomie $0$ (próg ufności równy $0.09$) otrzymany wynik TP to $32$ ($52,46\%$). Jednoznaczne stwierdzenie czy wynik TP jest wystarczający jest niemożliwe --  konieczna byłaby dalsza analiza okoliczności. Na nagranym filmie człowiek przybliża się do kamery na pewną odległość (do tego momentu zawsze twarzą do obiektywu) po czym wykonuje obrót w okół własnej osi.
+Model mógł np. wykryć tylko sytuacje gdy człowiek był skierowany twarzą do obiektywu. Zakładając, że człowiek zawsze będzie skierowany twarzą do obiektywu oznacza, że wynik taki jest satysfakcjonujący, ponieważ model poradził sobie z różnym rozmiarem klasy obiektu na obrazie. Natomiast w przykładowej sytuacji kiedy model nie potrafił wykryć gdy człowiek znajdował się dalej od obiektywu, hipotetyczny mieszkaniec domu nie zostałby poinformowany o napotkanym intruzie, co określa wynik TP jako nieatysfakcjonujący. Bez dalszych badań, po pierwsze, na bardziej zbalansowanym zestawie danych, po drugie, dla badania bardziej konkretnego typu sceny np. z rozróżnieniem na odległość obiektu od kamery nie da się stwierdzić optymalnego progu ufności.
 
 Podsumowując, przeprowadzone badania udowodniły skuteczność YOLOv8n w warunkach bardzo dobrego oświetlenia dla prostych scenariuszów testowych z pojedyńczą liczbą obiektów na ekranie. Interesującym okazała się bardzo niska wartość progu ufności, dla którego stwierdzono optymalne ustawienie. Kwestia ta oraz niejednoznaczne wyniki dla innych poziomów oświetlenia rodzi wiele pytań oraz jest potencjalnym punktem dalszych badań w przyszłości.
 

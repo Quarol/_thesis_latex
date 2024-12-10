@@ -14,7 +14,7 @@ Ponadto, klasa ta implementuje metodę, która uruchamia alarm dźwiękowy (\emp
 
 \emph{GUI} to graficzny interfejs użytkownika naszej aplikacji. Składa się on z wyświetlacza klatek obrazu oraz panelu sterowania. Tak jak to wcześniej wspomniano, używa on \emph{App} w celu komunikacji z resztą modułów. Tyczy się to zarówno komunikacji dwustronnej z \emph{ImageProcessor} oraz \emph{VideoCapture}, potrzebnej do panelu sterowania, oraz jednostronnej z \emph{VideoProcessingEngine} w celu pobrania klatki bufora wyjściowego.  
 
-Opisane zależności komunikacyjne między klasami oraz programowe zrealizowanie tej komunikacji zilustrowano uprosczonym diagramem UML na rysunku \ref{fig:uprosczony-diagram-klas}. Pełen diagram UML przedstawiono na rysunku \ref{fig:diagram-klas}. 
+Opisane zależności komunikacyjne między klasami, w tym typy połączeń między nimi (kompozycja, agregacja, dziedziczenie) zilustrowano uprosczonym diagramem UML na rysunku \ref{fig:uprosczony-diagram-klas}. Pełen diagram UML przedstawiono na rysunku \ref{fig:diagram-klas}. 
 
 \begin{figure}[H]
     \centering
@@ -23,10 +23,36 @@ Opisane zależności komunikacyjne między klasami oraz programowe zrealizowanie
     \label{fig:uprosczony-diagram-klas}
 \end{figure}
 
+Tak jak wspomniano klasa \emph{YoloInferenceConfig} nie jest instancjowana -- programowe użycie jej pól odbywa się wewnątrz \emph{ImageProcessor}, zaś jej metody są wywoływane poprzez obiekt klasy \emph{ImageProcessor}. Jest to umożliwione dzięki dziedziczeniu \emph{YoloInferenceConfig} przez \emph{ImageProcessor}.
+
+\emph{App} jako punkt startowy aplikacji tworzy w swoim konstruktorze obiekty klas \emph{VideoCapture}, \emph{ImageProcessor}, \emph{VideoProcessingEngine} oraz \emph{GUI} -- z perspektywy UML jest to agregacja tych klas. Nazwy tych obiektów to według kolejności: \emph{\_image\_processor}, \emph{\_video\_capture}, \emph{\_video\_processing\_engine} oraz \emph{\_gui}. Następnie, plik główny programu (\emph{main.py}) wywołuję metodę \emph{run}. Metoda ta uruchamia silnik generacji klatek (\emph{self.\_video\_processing\_engine.run()}) oraz wyświetla graficzny interfejs użytkownika \emph{self.\_gui.show()}. Po zamknięciu GUI wykonywana jest ostatnia istrukcja -- wyłączająca silnik generacji klatek (\emph{self.\_video\_processing\_engine.shutdown()}). Opisane użycie zareprezentowano fragmentem kodu w listingu \ref{lst:app-instancjowanie}.
+
+\begin{lstlisting}[caption={Tworzenie obiektów klas wewnątrz \emph{App} oraz uruchomienie w niej różnych sekcji aplikacji.}, label={lst:app-instancjowanie}]
+class App:
+    # Konstruktor App
+    def __init__(self) -> None:
+        # ... reszta kodu
+        # Tworzenie obiektow klas:
+        self._video_capture = VideoCapture()
+        self._image_processor = ImageProcessor()
+        self._video_processing_engine = VideoProcessingEngine(self._video_capture, self._image_processor, self)
+        self._gui = GUI(self)
+        # reszta kodu ...
+
+    # Metoda uruchamiajaca poszczegolne sekcje aplikacji
+    def run(self) -> None:
+        self._video_processing_engine.run()
+        self._gui.show()
+        self._video_processing_engine.shutdown()
+\end{lstlisting}
+
+
+
+
 
 \begin{figure}[H]
     \centering
-    \includegraphics[angle=270, scale = 0.5]{r_implementacja/klasy/classes_MyProject.png}
+    \includegraphics[angle=270, scale = 0.85]{r_implementacja/klasy/classes_MyProject.png}
     \caption{Diagram klas UML wygenerowany przez bilbiotekę \emph{pylint}.}
     \label{fig:diagram-klas}
 \end{figure}

@@ -50,7 +50,7 @@ Na bazie \cite{yolo_pierwszy_artykul} ogólny schemat działania modelu YOLO (ry
         \item \textbf{Podział obrazu:} Obraz dzielony jest na siatkę rozmiaru $SxS$ dla pewnego $S$, tworząc $S^{2}$ komórek. 
         \item \textbf{Jednoczesna lokalizacja oraz klasyfikacja:} 
         \begin{enumerate}
-            \item \textbf{Lokalizacja:} Dla każdej komórki szacowanych jest $B$ prostokątów ograniczających oraz określane są wynik pewności (ang. \emph{confidence score}) dla każdego z nich. Wynik pewności wyraża z jakim prawdopodobieństwem model stwierdza wystąpienie obiektu oraz z jaką dokładnościa określa jego położenie przestrzenne.
+            \item \textbf{Lokalizacja:} Dla każdej komórki szacowanych jest $B$ prostokątów ograniczających oraz określane są wyniki pewności (ang. \emph{confidence score}) dla każdego z nich. Wynik pewności wyraża z jakim prawdopodobieństwem model stwierdza wystąpienie obiektu oraz z jaką dokładnościa określa jego położenie przestrzenne.
             \item \textbf{Klasyfikacja:} Dla każdej komórki wyliczany jest zbiór rozmiarze $C$, gdzie $C$ odpowiada liczbie wykrywanych klas przez model. Pojedyńczy element zbioru odpowiada konkretnej klasie obiektu i zawiera wartość wyrażającą prawdopodobieństwo, iż obiekt w komórce należy do tej klasy obiektu. Prawdopodobiestwo to jest prawdopodobieństwem warunkowym -- opiera się na założeniu, że komórka przedstawia jakiś obiekt. 
         \end{enumerate}
         \item \textbf{Zakodowanie wyników obu operacji i przekazanie na wyjście CNN.}
@@ -58,7 +58,7 @@ Na bazie \cite{yolo_pierwszy_artykul} ogólny schemat działania modelu YOLO (ry
     \item  \textbf{Eliminacja redundancji w wynikach CNN:} Usunięcie zbędnych prostokątów ograniczających, w tym takich nachodzących na inne. 
 \end{enumerate}
 
-Badania szybkości dotychczasowo dostępnych modeli -- w tym Faster R-CNN i YOLO -- w rozdziale \emph{4.1 Comparison to Other Real-Time Systems} \cite{yolo_pierwszy_artykul} pokazały znaczącą różnicę szybkości YOLO (YOLO i Fast YOLO) względem modeli z rodziny R-CNN na rzecz YOLO. Natomiast warto nadmienić, iż jednoczna poprawa szybkości wiązała się z redukcją dokładności modelu, co również zostało ukazane w.w. badaniu.
+Badania szybkości dotychczasowo dostępnych modeli -- w tym Faster R-CNN i YOLO -- w rozdziale \emph{4.1 Comparison to Other Real-Time Systems} \cite{yolo_pierwszy_artykul} pokazały znaczącą różnicę szybkości YOLO (YOLO i Fast YOLO) względem modeli z rodziny R-CNN na rzecz YOLO. Natomiast warto nadmienić, iż jednoczna poprawa szybkości wiązała się z redukcją dokładności modelu, co również zostało ukazane w w.w. badaniu.
 
 Od momentu publikacji YOLO do momentu powstania niniejszego dokumentu (11 grudnia 2024) można wyróżnić co najmiej dziewięć kolejnych modeli. Modele te dokonywały różne zmiany w architekturze modelu pierwotnego, niemniej każdy z nich zachował podstawowe założenie realizacji zadań detekcji obiektów poprzez tylko pojedyńcze przejście przez CNN. 
 
