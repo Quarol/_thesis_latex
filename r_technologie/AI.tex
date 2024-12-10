@@ -16,7 +16,7 @@ Uprosczony schemat działania modelu R-CNN można przedstawić następująco:
 \begin{enumerate}
     \item \textbf{Propozycja regionów:} Generowana jest pewna liczba regionów na obrazie wejściowym. Region to obszar obrazu, w którym potencjalnie może znajdować się wykrywany typ obiektu.
     \item \textbf{Pozyskanie cech regionów:} Każdy region jest odpowiednio przeskalowywany, a następnie przetwarzany za pomocą konwolucyjnej sieci neuronowej (CNN) w celu pozyskania wektora cech o stałym rozmiarze.
-    \item \textbf{Klasyfikacja obiektów:} Na podstawie uzyskanego wektora cech odbywa się klasyfikacja każdego regionu --- przypisanie lub nie klasy obiektu do każdego regionu. Na koniec obszary regionów są poprawiane, aby lepiej obramowywały wykryty obiekt, a także usuwane są niektóre nachodzące na siebie regiony. Wynikowe regiony często określa się mianem prostokątów ograniczających (ang. \emph{bounding boxes}).
+    \item \textbf{Klasyfikacja obiektów:} Na podstawie uzyskanego wektora cech odbywa się klasyfikacja każdego regionu -- przypisanie lub nie klasy obiektu do każdego regionu. Na koniec obszary regionów są poprawiane, aby lepiej obramowywały wykryty obiekt, a także usuwane są niektóre nachodzące na siebie regiony. Wynikowe regiony często określa się mianem prostokątów ograniczających (ang. \emph{bounding boxes}).
 \end{enumerate}
 
  Koncepcja regionów znacznie zwiększyła dokładność detekcji (źródło: badania opisane w \cite{RCNN, Fast-RCNN, Faster-RCNN}), aczkolwiek modele z tej rodziny -- pomimo postępów w nowszych wersjach -- nadal były stosunkowo wolne ze względu na ich wieloetapowy schemat działania. Modele z rodziny R-CNN można okreslić mianem detektorów dwuetapowych (ang. \emph{two-stage detectors}), ponieważ w sposób niesymultaniczny wykonywały one dwa zadania:
@@ -51,7 +51,7 @@ Na bazie \cite{yolo_pierwszy_artykul} ogólny schemat działania modelu YOLO (ry
         \item \textbf{Jednoczesna lokalizacja oraz klasyfikacja:} 
         \begin{enumerate}
             \item \textbf{Lokalizacja:} Dla każdej komórki szacowanych jest $B$ prostokątów ograniczających oraz określane są wynik pewności (ang. \emph{confidence score}) dla każdego z nich. Wynik pewności wyraża z jakim prawdopodobieństwem model stwierdza wystąpienie obiektu oraz z jaką dokładnościa określa jego położenie przestrzenne.
-            \item \textbf{Klasyfikacja:} Dla każdej komórki wyliczany jest zbiór rozmiarze $C$, gdzie $C$ odpowiada liczbie wykrywanych klas przez model. Pojedyńczy element zbioru odpowiada konkretnej klasie obiektu i zawiera wartość wyrażającą prawdopodobieństwo, iż obiekt w komórce należy do tej klasy obiektu. Prawdopodobiestwo to jest prawdopodobieństwem warunkowym --- opiera się na założeniu, że komórka przestawia jakiś obiekt. 
+            \item \textbf{Klasyfikacja:} Dla każdej komórki wyliczany jest zbiór rozmiarze $C$, gdzie $C$ odpowiada liczbie wykrywanych klas przez model. Pojedyńczy element zbioru odpowiada konkretnej klasie obiektu i zawiera wartość wyrażającą prawdopodobieństwo, iż obiekt w komórce należy do tej klasy obiektu. Prawdopodobiestwo to jest prawdopodobieństwem warunkowym -- opiera się na założeniu, że komórka przedstawia jakiś obiekt. 
         \end{enumerate}
         \item \textbf{Zakodowanie wyników obu operacji i przekazanie na wyjście CNN.}
     \end{enumerate}
@@ -63,7 +63,7 @@ Badania szybkości dotychczasowo dostępnych modeli -- w tym Faster R-CNN i YOLO
 Od momentu publikacji YOLO do momentu powstania niniejszego dokumentu (11 grudnia 2024) można wyróżnić co najmiej dziewięć kolejnych modeli. Modele te dokonywały różne zmiany w architekturze modelu pierwotnego, niemniej każdy z nich zachował podstawowe założenie realizacji zadań detekcji obiektów poprzez tylko pojedyńcze przejście przez CNN. 
 
 Wizja komputerowa rozwija się w sposób dynamiczny. Na stan aktualny (grudzień 2024), w obecnym roku można wyróżnić co najmniej trzy nowe wersje modelu, w tym YOLO11 \cite{yolo11_ultralytics} (źródło: dokumentacja od firmy \emph{Ultralytics} \cite{yolo_docs}, podstrona \emph{/models}).
-Ze względu na dynamikę rozwoju, w chwili wyboru wersjii dla niniejszego systemu, postanowiono rozważyć modele opublikowane do końca 2023r.. Na podstawie porównania modeli przedstawionych w \cite{yolo_docs} (podstrona \emph{/models/yolov8}) zdecydowano o wyborze technologii YOLOv8, a konkretniej modelu YOLOv8n. Zaletą YOLOv8 jest możliwość wyboru kilku podwersji o różnym rozmiarze modelu --- im mniejszy model, tym szybszy, a jednocześnie mniej dokładny.
+Ze względu na dynamikę rozwoju, w chwili wyboru wersjii dla niniejszego systemu, postanowiono rozważyć modele opublikowane do końca 2023r.. Na podstawie porównania modeli przedstawionych w \cite{yolo_docs} (podstrona \emph{/models/yolov8}) zdecydowano o wyborze technologii YOLOv8, a konkretniej modelu YOLOv8n. Zaletą YOLOv8 jest możliwość wyboru kilku podwersji o różnym rozmiarze modelu -- im mniejszy model, tym szybszy, a jednocześnie mniej dokładny.
 
 \begin{figure}[H]
     \centering
@@ -73,7 +73,7 @@ Ze względu na dynamikę rozwoju, w chwili wyboru wersjii dla niniejszego system
 \end{figure}
 
 Ponieważ zaprojektowany system będzie operował na sprzęcie komputerowym (z naciskiem na kartę graficzną) posiadanym przez przeciętnego użytkownika, zdecydowano się postawić na szybkość modelu --- stąd wybór YOLOv8n. 
-Zaletą YOLOv8n jest również duża liczba wykrywanych klas obiektów dla niedostrojonego (ang. \emph{fine-tuned}) modelu -- jest ich 80. Podstawowa wersja modelu została przetrenowana na zastewia danych COCO. Więcej informacji nt. zestawu danych znajduję się tutaj \cite{COCO_docs}. 
+Zaletą YOLOv8n jest również duża liczba wykrywanych klas obiektów dla niedostrojonego (ang. \emph{fine-tuned}) modelu -- jest ich 80. Podstawowa wersja modelu została przetrenowana na zestawie danych COCO. Więcej informacji nt. zestawu danych znajduje się tutaj \cite{COCO_docs}. 
 
 
 \subsection{Interfejs programistyczny do YOLO od firmy Ultralytics}
@@ -87,7 +87,7 @@ Tryby użytkowania to między innymi (źródło \cite{yolo_docs}, podstrona \emp
     \item \textbf{val}: tryb używany do ewaluacji przetrenowanego modelu.
 \end{itemize}
 
-W projeckie użyto trybu inferencji. Warto wspomnieć, iż dokumentacja \cite{yolo_docs} jest, na chwilę obecną (2 grudnia 2024), często pisana z perspektywy modelu YOLOv11. W praktyce wiele funkcji interfejsu działa również na innych wersjach modelu, w tym wersjach opartych na otwartym oprogamowaniu, a nie będących jednocześnie stworzonych przez autorów interfejsu. W przypadku użytych funkcji trybu inferencji, nie pojawiły się żadne problemy przy próbie użtycia dla modelu YOLOv8n. 
+W projeckie użyto trybu inferencji. Warto wspomnieć, iż dokumentacja \cite{yolo_docs} jest, na chwilę obecną (2 grudnia 2024), często pisana z perspektywy modelu YOLOv11. W praktyce wiele funkcji interfejsu działa również na innych wersjach modelu, w tym wersjach opartych na otwartym oprogamowaniu, a nie będących jednocześnie stworzonych przez autorów interfejsu. W przypadku użytych funkcji trybu inferencji, nie pojawiły się żadne problemy przy próbie użycia dla modelu YOLOv8n. 
 
 
 \begin{lstlisting}[caption={Użycie trybu inferencji na przykładzie własnego kodu źródłowego.}, label={lst:inference_interface}]
@@ -136,6 +136,6 @@ Na bazie kodu \ref{lst:inference_interface}, inferencji można dokonać w nastę
     Wyniki inferencji są zwracane jako typ \emph{Results}. Zawiera on m.in. liste prostokątów ograniczających. Pobranie koordynatów prostokąta dla pojedyńczego wyniku wymaga jedynie iteracji przez liste prostokątów (\emph{detections.boxes}) a następnie pobrania koordynatów z pojedyńczego prostokąta (\emph{box.xyxy[0]}).
 \end{itemize}
 
-W celu znalezienia informacji o pracy z obiektem wynikowym \emph{Results} oraz zapoznanie się z resztą dostępnych parametrów inferencji rekomenduje się podstronę \emph{modes/predict} dokumentacji \cite{yolo_docs}.
+W celu znalezienia informacji o pracy z obiektem wynikowym \emph{Results} oraz zapoznania się z resztą dostępnych parametrów inferencji rekomenduje się podstronę \emph{modes/predict} dokumentacji \cite{yolo_docs}.
 
 Przedstawiony interfejs w przejrzysty i prosty sposób pozwala na użytkowanie modelu YOLOv8n. Jest to kolejny powód wybrania właśnie tej technologii.
