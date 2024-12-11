@@ -1,5 +1,6 @@
 \section{Architektura systemu}
-System można podzielić na dwa główne moduły: silnik przetwarzania wideo oraz interfejs użytkownika. 
+\label{chap:architektura}
+Najważniejsze elemety systemu można podzielić na dwa główne moduły: silnik przetwarzania wideo oraz interfejs użytkownika. 
 
 Silnik przetwarzania wykonuje następujące zadania:
 \begin{enumerate}
@@ -11,12 +12,11 @@ Silnik przetwarzania wykonuje następujące zadania:
     \item Przekazuje przygotowaną klatkę na wyjściu modułu. 
 \end{enumerate}
 
-Sekwencje wykonywane w każdym module są ciągle powtarzane.
 Operacja detekcji jest czasochłonna jak i również pobór klatki ze względu na ograniczenia sprzętowe kamery (FPS). Dlatego zamiast sekwencyjnej realizacji zadań silnika przetwarzania postanowiono podzielić go na dwa podmoduły oraz zrównoleglić ich wykonanie poprzez utworzenie wątku dla obu z nich. Zadania zawarte w każdym podmodule są wykonywane sekwencyjnie.
 
 Pierwszy podmoduł realizuje w kolejności zadania nr 1 i nr 2, zaś moduł drugi -- w kolejności zadania od nr 3 do 6 włącznie. Przekazanie klatki pomiędzy wątkami (modułami) umożliwiono poprzez zastosowanie bufora wraz z mechanizmami synchronizacji dostępu do niego (dalej opisanymi w szczegółach implementacyjncyh w rozdziale \ref{chap:szczegoly-implementacji}). Podmoduł pierwszy przekazuje klatkę do bufora, natomiast podmoduł drugi czeka aż klatka ta zostanie przekazana po czym pobiera ją i czyści bufor. 
 
-Oprócz ustanowienia podmodułu drugiego oddzielnym wątkiem, podmoduł ten wywołuje wykonanie alarmu dźwiękowego (krok nr 4) w dodatkowym wątku. Bez użycia dodatkowego wątku dalsze kroki w podmodule zostałyby wykonane dopiero po zakończeniu alarmu -- po zakończeniu pliku dźwiękowego służącego jako alarm. Sekwencja podmodułu w większości przypadków wykonuję się szybciej niż odtworzenie całego pliku co w połączeniu z dodatkowym wątkiem może powodować nieprzyjemne dla użytkownika nałożenie się alarmów w tym samym czasie. Zastosowano więc mechanizm (opisany w rozdziale \ref{chap:szczegoly-implementacji}), który pozwala uniknąć wywołania alarmu, jeżeli poprzedni nie został zakończony.  
+Oprócz ustanowienia podmodułu drugiego oddzielnym wątkiem, podmoduł ten wywołuje wykonanie alarmu dźwiękowego (krok nr 4) w dodatkowym wątku. Bez użycia dodatkowego wątku dalsze kroki w podmodule zostałyby wykonane dopiero po zakończeniu alarmu -- po zakończeniu pliku dźwiękowego służącego jako alarm. Sekwencja podmodułu w większości przypadków wykonuję się szybciej niż odtworzenie całego pliku co w połączeniu z dodatkowym wątkiem może powodować nieprzyjemne dla użytkownika nałożenie się alarmów w tym samym czasie. Zastosowano więc mechanizm (opisany w rozdziale \ref{chap:szczegoly-implementacji}), który pozwala uniknąć wywołania alarmu, jeżeli poprzedni nie został zakończony.
 
 Przechodząc do modułu interfejsu użytkownika, wykonuje on następujące funkcje systemu:
 \begin{enumerate}
@@ -26,6 +26,13 @@ Przechodząc do modułu interfejsu użytkownika, wykonuje on następujące funkc
     \item Umożliwia użytkownikowi ustawienie progu ufności detekcji (próg ufności opisany w rozdziale \ref{chap:wprowadzenie-yolo_interjes}) obiektów w panelu sterowania GUI.
     \item Umożliwia użytkownikowi ustawienie wykrywanych klas obiektów ze zdefiniowanego zbioru klas w panelu sterowania GUI.
 \end{enumerate}
-Moduł interfejsu użytkownika również działa w oddzielnym wątku. Aby krok nr 1 był możliwy, należało tak jak w przypadku podmodułów silnika przetwarzania wideo zaimplementować sposób przekazywania klatki. W tym przypadku również użyto bufora. W tej sytuacji jednak strona pobierająca dane (moduł interfejsu) nie czeka aż bufor jest pełny lecz periodycznie ponawia próbę poboru klatki. 
+Ważną informacją na temat funkcji od nr 2 do nr 4 są okoliczości ich użycia. Zainicjowane zostają jako efekt integracji użytkownika z panelem sterowania graficznego interfejsu użytkownika. Temat użycia GUI opisano w oddzielnym rozdziale \ref{chap:uzytkownik-gui}. 
 
-Każda z opisanych wyżej funkcji oprócz nr 1 jest wywoływana przez użytkownika poprzez intergrację z GUI. Funkcje nr 2 i 3 mają bezpośredni wpływ na działanie silnika przetwarzania wideo.
+Moduł interfejsu użytkownika również działa w oddzielnym wątku. Aby krok nr 1 był możliwy, wymagana jest komunikacja między modułem silnika (dokładniej podmodułem drugim).  
+Należało tak jak w przypadku podmodułów silnika przetwarzania wideo zaimplementować sposób przekazywania klatki. Również użyto do tego bufora z mechanizmem synchronizacji dostępu. W tym wypadku oprócz klatki przesyłana jest również informacja czy kamera dalej działa, co może być przydatną informacją w przypadku odłączenia kamery od komputera. W przeciweństwie do podmodułu drugiego silnika, strona pobierająca dane (moduł interfejsu) nie czeka aż bufor jest pełny. Próba poboru klatki jest realizowana periodycznie. W sytuacji braku klatki periodyczny pobór jest kontuuowany. W sytacji kiedy przekazano informacje o niedziałaniu kamery, periodyczny pobór zostaje zakończony.
+
+Periodyczny pobór jest wyłączony na starcie aplikacji i wywoływany jest dopiero poprzez ustawienie kamery funkcją nr 2. Pobór jest wyłączony również, w przypadku wykonania funkcji nr 3.
+
+Oprócz wpływu na moduł interfejsu, funkcje nr 2 i 3 ingerują w zachowanie modułu silnika. Domyślnie po włączeniu aplikacji wątki dla obu podmodułów silnika są utworzone lecz ich sekwencje nie rozpoczynają się dopóki nie zostanie wysłany sygnał. Sygnał jest informacją o tym, iż kamera została ustawiona i działa. Sygnał ten wysyłany jest za pomocą funkcji nr 3. Przeciwnie do nr 3, funkcja nr 2 usuwa źródło wideo, więc wstrzymuje dalsze powtórzenia obu sekwencji, tym samym oczekując na wznownienie wywołaniem funkcji nr 3.
+
+Funkcje nr 4 i 5 ustawiają parametry modułu zawierającego model Yolov8n, który jest konieczny do przeprowadzenie kroku nr 3 silnika przetwarzania wideo. W module tym wykorzystywany jest interfejs opisany w rozdziale \ref{chap:wprowadzenie-yolo_interjes}. Funkcja nr 4 ustawia parametr \emph{conf}, zaś nr 5 -- parametr \emph{classes}. Funkcje te zmieniają jedynie te parametry, nie ingerując w działanie modułu silnika przetwarzania wideo, co pozwala kontuunacje całego procesu kończącego się wyświetleniem klatki na wyświetlaczu GUI.
