@@ -1,58 +1,26 @@
-\section{Opis najważniejszych funkcji systemu}
-Każdą funkcję realizowaną przez system można przypisać do kategorii logicznej lub kategorii zleconej. Kategoria zlecona zawiera wydarzenia, które użytkownik zainicjował poprzez integrację z panelem sterowania GUI. Kategoria logiczna zawiera funkcję, które mogą zostać wykonane, pośrednio lub bezpośrednio, jest następstwo wystąpienia wydarzeń.
+\section{Wymagania funkcjonalne i założenia systemowe}
+Projektowany system będzie służył synchronizacji różnych wymagań funkcjonalnych opisanych w niniejszym rozdziale. Będzie on wykonany w postaci oprogramowania. 
+Oprogramowanie będzie wytworzone w formie aplikacji desktopowej, dostępnej na system operacyjny Windows 11. Aplikacja ta musi posiadać graficzny interfejs użytkownika (GUI) składający się z panelu sterującego oraz wyświetlacza. 
+Oprogramowanie ma obługiwać jedną z dostępnych (niewykorzystywanych przez inne procesy) kamer podłączonych do komputera. Lista dostępnych kamer jest określana jednorazowo przed pojawieniem się GUI na ekranie. Dlatego w przypadku chęci użycia kamery podłączonej w trakcie wykonywania programu należy zamknąć aplikację (panel sterowania GUI) i uruchomić ją ponownie.
 
-Wyróznia się trzy wydarzenia: zmiana parametru progu ufności detektora obiektów poprzez manipulację suwakiem (ang. \emph{slider}), ustawienie klas obiektów wykrywanych przez detektor poprzez zaznaczenie odpowiednich przycisków przy nazwach klas oraz wybór źródła wideo z menu --- może to być jedna z kamer podłączonych do komputera lub zapisany na dysku plik wideo albo opcja wyłączenia źródła wideo. Wygląd panelu sterowania zilustrowany jest na rysunku \ref{fig:panel-sterowania}. 
-Uwaga: plik wideo jako źródło należy traktować jako dodatek. W dalszej części dokumentu kamera jest jedynym rozważanym źródłem wideo.   
+Na podstawie powyższych założeń, kolejne wymagania fukncjonalne można podzielić na dwa bloki: pierwszy (logiczny), drugi (wpływający na stan GUI). Na bazie pierwszego bloku system realizuje następujące funkcje:
+\begin{itemize}
+    \item Pobiera klatki obrazu z kamery.
+    \item Zmniejsza rozmiar klatki, jeżeli jest on większy niż ekran monitora komputera.
+    \item Wykrywa obiekty na podanej klatce obrazu.
+    \item Przygotowuję klatkę obrazu do wyświetlenia -- wizuallizuje lokalizację obiektów bazując na wynikach detekcji, jeżeli znajdują się w nich wykrycia.
+    \item Alarmuje dźwiękowo użytkownika, jeżeli obiekty zostały wykryte.
+    \item Synchronizuje wyżej wypunktowane funkcje.
+\end{itemize}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.79\linewidth]{r_implementacja/panel_sterowania/panel.jpg}
-    \caption{Panel sterowania graficznego interfejsu użytkownika.}
-    \label{fig:panel-sterowania}
-\end{figure}
+Na bazie drugiego bloku system:
+\begin{itemize}
+        \item Wyświetla przygotowane klatki obrazu w wyświetlaczu GUI.
+        \item Umożliwia użytkownikowi wyłączenia źródła wideo (wyłączenia wyświetlacza) w panelu sterowania GUI.
+        \item Umożliwia użytkownikowi ustawienie progu ufności detekcji (próg ufności opisany w rozdziale \ref{chap:wprowadzenie-yolo_interjes}) obiektów w panelu sterowania GUI.
+        \item Umożliwia użytkownikowi ustawienie wykrywanych klas obiektów ze zdefiniowanego zbioru klas w panelu sterowania GUI.
+        \item Umożliwia użytkownikowi wybór kamery jako źródło wideo z dostępnych kamer wejściowych w panelu sterowania GUI.
+        \item Generuje listę dostępnych kamer przed wyświetleniem GUI.
+\end{itemize}
 
-Zmiana parametrów detektora może odbywać się w trakcie działania zadań dektecji obiektów. Po wystąpieniu wydarzania nowe wartości parametrów nadpisują ustawienia detektora i od tego momentu tryb inferencji będzie korzystać z nowych parametrów.
-
-Wybranie źródła wideo skutkuje uruchomieniem ustalonej sekwencji funkcji logicznych. Sekwencja ta objemuję następujące kroki:
-\begin{enumerate}
-    \item Pobranie klatki obrazu z wybranego źródła wideo.
-    \item Detekcja ustawionych klas obiektów na bazie pobranej klatki.
-    \item Jeżeli wykryto choć jeden obiekt:
-    \begin{enumerate}
-        \item Przetworzenie klatki w celu narysowania wygenerowanych prostokątów ograniczających. 
-        \item Alarmowanie w formie dźwiękowej. 
-    \end{enumerate}
-    \item Dostarczenie klatki do bufora.
-    \item Pobranie klatki z bufora oraz wyświetlenie jej w wyświetlaczu GUI.
-\end{enumerate} 
-Sekwencja jest powtarzana do momentu zakończenia się pliku wideo lub wyłączenia bądź zmiany źródła wideo. 
-
-Na podstawie funkcji systemu zobrazowano przykładowy scenariusz wykorzystania systemu przez użytkownika z kolejnymi krokami na ryskunkach \ref{fig:mockup-2}, \ref{fig:mockup-3}, \ref{fig:mockup-4}. Przykładowe użycie to nagranie sceny ze znajdującym się człowiekiem (twarz zamazano).
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{r_implementacja/panel_sterowania/panel_mockup.jpg}
-    \caption{GUI w chwili uruchomienia aplikacji. Domyślne paramtry detektora to próg ufności równy 0.5 oraz klasa \emph{człowiek} jako zbiór wykrywanych klas.}
-    \label{fig:mockup-2}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{r_implementacja/panel_sterowania/camera_50.jpg}
-    \caption{Uruchomienie wyświetlacza dla domyślncyh parametrów detektora oraz kamery o indeksie 0.}
-    \label{fig:mockup-3}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{r_implementacja/panel_sterowania/camera_0.jpg}
-    \caption{Zmiana progu ufności na 0.00.}
-    \label{fig:mockup-4}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{r_implementacja/panel_sterowania/camera_no_person.jpg}
-    \caption{Usunięcie klasy człowiek z wykrywanych obiektów.}
-    \label{fig:mockup-5}
-\end{figure}
+System musi zorganizować funkcje w odpowiednie moduły i odpowiednio je synchronizować. Założoną architekturą systemu jest architektura wielowątkowa. 

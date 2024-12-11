@@ -1,0 +1,31 @@
+\section{Architektura systemu}
+System można podzielić na dwa główne moduły: silnik przetwarzania wideo oraz interfejs użytkownika. 
+
+Silnik przetwarzania wykonuje następujące zadania:
+\begin{enumerate}
+    \item Pobiera klatkę obrazu z kamery.
+    \item Zmniejsza rozmiar klatki, jeżeli jest on większy niż ekran monitora komputera.
+    \item Wykrywa obiekty na podanej klatce obrazu.
+    \item Przygotowuję klatkę obrazu do wyświetlenia -- wizuallizuje lokalizację obiektów bazując na wynikach detekcji, jeżeli znajdują się w nich wykrycia.
+    \item Alarmuje dźwiękowo użytkownika, jeżeli obiekty zostały wykryte.
+    \item Przekazuje przygotowaną klatkę na wyjściu modułu. 
+\end{enumerate}
+
+Sekwencje wykonywane w każdym module są ciągle powtarzane.
+Operacja detekcji jest czasochłonna jak i również pobór klatki ze względu na ograniczenia sprzętowe kamery (FPS). Dlatego zamiast sekwencyjnej realizacji zadań silnika przetwarzania postanowiono podzielić go na dwa podmoduły oraz zrównoleglić ich wykonanie poprzez utworzenie wątku dla obu z nich. Zadania zawarte w każdym podmodule są wykonywane sekwencyjnie.
+
+Pierwszy podmoduł realizuje w kolejności zadania nr 1 i nr 2, zaś moduł drugi -- w kolejności zadania od nr 3 do 6 włącznie. Przekazanie klatki pomiędzy wątkami (modułami) umożliwiono poprzez zastosowanie bufora wraz z mechanizmami synchronizacji dostępu do niego (dalej opisanymi w szczegółach implementacyjncyh w rozdziale \ref{chap:szczegoly-implementacji}). Podmoduł pierwszy przekazuje klatkę do bufora, natomiast podmoduł drugi czeka aż klatka ta zostanie przekazana po czym pobiera ją i czyści bufor. 
+
+Oprócz ustanowienia podmodułu drugiego oddzielnym wątkiem, podmoduł ten wywołuje wykonanie alarmu dźwiękowego (krok nr 4) w dodatkowym wątku. Bez użycia dodatkowego wątku dalsze kroki w podmodule zostałyby wykonane dopiero po zakończeniu alarmu -- po zakończeniu pliku dźwiękowego służącego jako alarm. Sekwencja podmodułu w większości przypadków wykonuję się szybciej niż odtworzenie całego pliku co w połączeniu z dodatkowym wątkiem może powodować nieprzyjemne dla użytkownika nałożenie się alarmów w tym samym czasie. Zastosowano więc mechanizm (opisany w rozdziale \ref{chap:szczegoly-implementacji}), który pozwala uniknąć wywołania alarmu, jeżeli poprzedni nie został zakończony.  
+
+Przechodząc do modułu interfejsu użytkownika, wykonuje on następujące funkcje systemu:
+\begin{enumerate}
+    \item Wyświetla przygotowane klatki obrazu w wyświetlaczu GUI.
+    \item Umożliwia użytkownikowi wyłączenia źródła wideo (wyłączenia wyświetlacza) w panelu sterowania GUI.
+    \item Umożliwia użytkownikowi wybór kamery jako źródło wideo z dostępnych kamer wejściowych w panelu sterowania GUI.
+    \item Umożliwia użytkownikowi ustawienie progu ufności detekcji (próg ufności opisany w rozdziale \ref{chap:wprowadzenie-yolo_interjes}) obiektów w panelu sterowania GUI.
+    \item Umożliwia użytkownikowi ustawienie wykrywanych klas obiektów ze zdefiniowanego zbioru klas w panelu sterowania GUI.
+\end{enumerate}
+Moduł interfejsu użytkownika również działa w oddzielnym wątku. Aby krok nr 1 był możliwy, należało tak jak w przypadku podmodułów silnika przetwarzania wideo zaimplementować sposób przekazywania klatki. W tym przypadku również użyto bufora. W tej sytuacji jednak strona pobierająca dane (moduł interfejsu) nie czeka aż bufor jest pełny lecz periodycznie ponawia próbę poboru klatki. 
+
+Każda z opisanych wyżej funkcji oprócz nr 1 jest wywoływana przez użytkownika poprzez intergrację z GUI. Funkcje nr 2 i 3 mają bezpośredni wpływ na działanie silnika przetwarzania wideo.
