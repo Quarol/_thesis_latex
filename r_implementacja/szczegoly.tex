@@ -2,6 +2,7 @@
 \label{chap:szczegoly-implementacji}
 W sekcji tej opisano implementacje wielowątkowego podejścia architektonicznego. Przedstawiono argumenty za wybraniem tego typu architektury, rozwiazanie problemów przez nią wywoływanych oraz uzasadnienie innych działań zastosowanych w celu poprawy wydajności systemu.  
 
+\subsection{Nakreślenie powodu użycia architektury wielowątkowej}
 Pierwsza iteracja oprogramowania była oparta na architekturze jednowątkowej. Sekwencyjnie wykonywano kolejne metody w nieskończonej pętli: pobór klatki z kamery, detekcja obiektów, alarmowanie dźwiękowe, wizualizacja obiektów oraz wyświetlenie klatki w wyświetlaczu graficznego interfejsu użytkownika.
 
 Na tym etapie rodziału warto pochylić się nad działaniem modułu graficznego użytego w klasie \emph{GUI} --- tkinter. 
@@ -107,4 +108,14 @@ Użycie interfejsu w celu pobrania klatki (\emph{self.\_communication\_interface
 
 Długa sekwencja zadań oraz czasochłonność niektórych operacji (np. detekcji obiektów) blokowała odświeżanie oraz dostęp do funkcji komponentów GUI, czyniąc go oraz cały system nieresposywnym i powolnym. W celu poprawy optymalizacji nie zdecydowano się zmienić ustawionego, minimalnego czasu, po którym następują kolejne wykonania \emph{\_update\_frame}, ponieważ ryzykowanoby utratą wiekszej ilości pobieranych klatek -- kluczowych dla alarmowania użytkownika -- pomimo poprawy responsywności interfejsu graficznego.
 
-Pierwszym podjętym krokiem w celu poprawy wersji jednowątkowej było przeniesienie wykonania inferencji (detekcji) z CPU na GPU. Parametr do tego użyty był opisany w rodziale \ref{chap:wprowadzenie-yolo_interjes}. Poprawniono tym znacznie wydajność uzyskania finalnej klatki, aczkolwiek GUI nadal borykało się z problemem responsywności. Dlatego też postanowiono zmienić architekturę na wielowątkową. Podejściem takim osiągniąto zamierzone rezultaty -- GUI osiągneło zadowalający poziom responsywności przy zachowaniu satysfakcjonującej wydajności (opisanej w rozdziale \ref{chap:test-szybkosci}, testów szybkości systemu). 
+Pierwszym podjętym krokiem w celu poprawy wersji jednowątkowej było przeniesienie wykonania inferencji (detekcji) z CPU na GPU. Parametr do tego użyty był opisany w rodziale \ref{chap:wprowadzenie-yolo_interjes}. Poprawniono tym znacznie wydajność uzyskania finalnej klatki, aczkolwiek GUI nadal borykało się z problemem responsywności. Dlatego też postanowiono zmienić architekturę na wielowątkową. Podejściem takim osiągniąto zamierzone rezultaty -- GUI osiągneło zadowalający poziom responsywności przy zachowaniu satysfakcjonującej wydajności (opisanej w rozdziale \ref{chap:test-szybkosci}, testów szybkości systemu).
+
+
+
+
+
+
+
+\subsection{Szczegóły implementacyjne wątków}
+Wątki zdefiniowano według opisu architektury w rozdziale \ref{chap:architektura}. 
+
