@@ -9,7 +9,7 @@ Silnik przetwarzania wykonuje następujące zadania:
     \item Wykrywa obiekty na podanej klatce obrazu.
     \item Przygotowuję klatkę obrazu do wyświetlenia -- wizuallizuje lokalizację obiektów bazując na wynikach detekcji, jeżeli znajdują się w nich wykrycia.
     \item Alarmuje dźwiękowo użytkownika, jeżeli obiekty zostały wykryte.
-    \item Przekazuje przygotowaną klatkę na wyjściu modułu. 
+    \item Przekazuje przygotowaną klatkę na wyjście modułu. 
 \end{enumerate}
 
 Operacja detekcji jest czasochłonna jak i również pobór klatki ze względu na ograniczenia sprzętowe kamery (FPS). Dlatego zamiast sekwencyjnej realizacji zadań silnika przetwarzania postanowiono podzielić go na dwa podmoduły oraz zrównoleglić ich wykonanie poprzez utworzenie wątku dla obu z nich. Zadania zawarte w każdym podmodule są wykonywane sekwencyjnie.

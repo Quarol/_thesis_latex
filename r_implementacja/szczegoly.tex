@@ -117,5 +117,167 @@ Pierwszym podjętym krokiem w celu poprawy wersji jednowątkowej było przeniesi
 
 
 \subsection{Szczegóły implementacyjne wątków}
-Wątki zdefiniowano według opisu architektury w rozdziale \ref{chap:architektura}. 
+Wątki zdefiniowano według opisu architektury w rozdziale \ref{chap:architektura}. Wspomniano w nich o zastosowaniu mechanizmów synchronizacji dostępu do buforów. W tej sekcji tego dokumentu przedstawiono użyte mechanizmy oraz omówiono fragmenty kodu objętych wątkami.
 
+Zaczynając od wątku do alarmowania. W celu zapobiegnięcia uruchomienia alarmu w momencie, gdy poprzedni się nie zakończył (nie zakończył się plik dźwiękowy) wykorzystano rozwiązanie z biblioteki do obsługi wątków oraz dostarczającej mechanizmów syncrhonizacji wątków \emph{threading} -- \emph{Event}. Użyto trzech funkcji obiektu Event: \emph{set}, \emph{clear} oraz \emph{is\_set}. \emph{set} ustawia wewnętrzną flagę w obiekcie Event, natomiast \emph{clear} -- czyści ją. Funkcja \emph{is\_set} sprawdza czy flaga została ustawiona. W metodzie bezpośrednio uruchamiającej alarm (\emph{\_play\_alert}) najpierw ustawiono flagę, a następnie uruchomiono alarm. Po zakończeniu alarmu, wykonywane jest czysczenie flagi i metoda kończy działania. Metoda wywołująca \emph{\_play\_alert} (\emph{play\_audio\_alert}) sprawdza czy flaga została ustawiona. Jeżeli tak, kończy ona działanie. Jeżeli nie, wywołuje ona \emph{\_play\_alert} w oddzielnym wątku. Do przydzielenia metody do oddzielnego wątku, użyto obiektu klasy \emph{ThreadPoolExecutor} z biblioteki \emph{concurrent.features} służącego do automatycznego zarządzania wątkami. Z kolei do włączenia pliku dźwiękowego, wykorzystano metodę \emph{playsound}.
+Kod prezentujący użycie obiektu zawarto w listingu \ref{lst:alarm-thread}.
+
+\begin{lstlisting}[caption={Kod uruchamiający alarm dźwiękowy oraz zapobiegający wielu symultaicznym uruchomieniom.}, label={lst:alarm-thread}]
+# playsound - umozliwia odtworzenie pliku dzwiekowego:
+from playsound import playsound 
+# Biblioteka do obslugi wielowatkowosci i mechanizmow synchornizacji:
+import threading
+# ThreadPoolExecutor - zarzadza automatycznie watkami:
+from concurrent.futures import ThreadPoolExecutor
+
+ALERT_SOUND = 'assets/alert.wav' # sciezka do pliku dzwiekowego
+class App:
+    # Konstruktor App:
+    def __init__(self) -> None:
+        # ... reszta kodu
+        self._play_alert_executor = ThreadPoolExecutor(max_workers=1)
+        self._alert_event = threading.Event()
+        self._alert_event.clear()    
+        # reszta kodu ...
+
+    # Metoda wywolana przez VideoProcessingEngine ...
+    # ... w celu odtworzenia alarmu (pliku dzwiekowego):
+    def play_audio_alert(self) -> None:
+        # Sprawdzenie czy alarm sie zakonczyl:
+        if not self._alert_event.is_set():
+            # Jezeli tak, otworz plik dzwiekowy w oddzielnym watku: 
+            self._play_alert_executor.submit(self._play_alert)
+        # Jezeli nie, alarm nie jest wlaczany
+
+    # Metoda odtwarzajaca plik dzwiekowy:
+    def _play_alert(self) -> None:
+        # Ustawienie eventu, zapobieganie odwtwarzania ...
+        # ... wiecej niz raz w tym samym czasie: 
+        self._alert_event.set()
+        # Odtworzenie alarmu:
+        playsound(ALERT_SOUND)
+        # Wyczyszcenie eventu, przywrocenie mozliwosci ... 
+        # ... odtworzenia alarmu:
+        self._alert_event.clear()
+\end{lstlisting}
+
+
+Przechodząc do wątków podmodułów opisanych w rodziale \ref{chap:architektura}, zostanie opisany mechanizm bufora pośredniego pomiędzy podmodułami oraz mechanizm bufora wyjściowego pomiędzy podmodułem drugim, a periodycznym pobiorem klatki przez graficzny interfejs użytkownika. Omawiane mechanizmy są przedstawione w kodzie w listingu \ref{lst:engine-1}. Metoda \emph{\_capture\_frames} realizuje kroki podmodułu pierwszwego, zaś \emph{\_process\_frames} modułu drugiego.
+%najpierw zostanie opisany mechanizm synchronizacji dostępu do klatek, po czym przedstawiony zostane mechanizm reagujący na zmiane bądź usunięcie źródła wideo przez użytkownika.
+
+W przypadku bufora pośredniego \emph{\_buffer} użyto mechanizm synchronizacji \emph{Lock} (mutex) oraz zmienną warunkową ustawioną na ten mutex (\emph{\_buffer\_lock}). Strona pobierająca klatkę z bufora dokonuje próby uzyskania mutexa poprzez zmienną warunkową. Następnie, jeżeli bufor jest pusty, wątek jest usypiany na zmiannej warunkowej. Usypianie wprowadzono w celu nie marnowania zasobów obliczeniowych dla innych wątków. Jeżeli bufor nie był pusty, bądź wątek został wybudzony, pobierana jest klatka, a bufor jest czyszczony. 
+Po stronie wysyłającej klatkę do bufora, na początku następuje próba uzyskania mutexa. Jest to ten sam mutex jaki jest użyty po stronie pobierającej, dzięki czemu wyklucza się problem wyścigu. Po uzyskaniu mutexa, klatka ustawiana jest do bufora i następnie przy użyciu funkcji \emph{notify} wybudzany jest wątek podmodułu drugiego. 
+
+Zdecydowano się wykorzystać bufor przechowujący tylko jedną klatkę, ponieważ w systemie nacisk kładziony jest na przetwarzanie jak najnowszej klatki, z jak najmniejszym opóźnieniem względem kamery, co ma wpływ na szybkość alarmowania, które jest celem niniejszego systemu.
+W hipotetycznym przypadku użycia kolejki o rozmiarze większym niż jeden, w sytuacji kiedy podmoduł pierwszy (w głównej mierze związany z FPS kamery) jest szybszy od podmodułu drugiego, kolejka co pewien czas zapełniałaby się. Taka sytuacja wymaga zatrzymania podmodułu jeden, co wiąże się z niedostarczaniem najnowszych klatek do bufora. Kolejną potencjalną wadą mechanizmu kolejkowania jest jej działanie oparte na zasadzie FIFO. W przypadku wypełnionej kolejki, zamiast przetwarzania najnowszej klatki, pobierane byłby starsze klatki niż najnowsza dostępna. O ile nie stanowiłoby to problemu, jeżeli detekcja obiektów byłaby wystarczająco szybka, a czas detekcji względnie powtarzalny. Tak badania opisane w rodziale \ref{chap:badania-skutecznosci} pokazują, iż istnieją znaczące odchylenia od średniego czasu detekcji. W takiej sytuacji mógłby być wymagany dodatkowy mechanizm, którzy przykładowo czyściłby kolejke i pobierał z niej najnowszą klatkę, jeżeli stwierdzono, iz system ma zbyt duże opóźnienie względem kamery. Jednak z racji nie podanych wymagań sprzętowych, które system ma spełniać, zdecydowana się pozastać przy aktualnym, prostrzym mechanizmie synchronizacji.
+
+Mechanizm synchornizacji użyty pomiędzy GUI, a podmodułem drugim jest podobny. Różnicą jest brak użycia zmiennej warunkowej. Moduły dostają dostęp do bufora po uprzednim uzyskaniu współdzielonego mutexa. 
+
+
+\begin{lstlisting}[caption={Kod modułu silnika przetwarzania wideo z zawartymi mechanizami synchronizacji}, label={lst:engine-1}]
+class VideoProcessingEngine:
+    def __init__(self, video_capture: VideoCapture, image_processor: ImageProcessor, audio_alarm: App) -> None:
+        self._frame_buffer = None # Bufor posredni
+        self._processed_frame_buffer = None # Bufor wyjsciowy klatki
+        self._is_capture_on = False # Okresla czy kamera dziala
+
+        self._buffer_lock = threading.Lock()
+        self._buffer_not_empty = threading.Condition(self._buffer_lock)
+
+        # Warunek petli podtrzymujacy istnienie watkow 
+        # Jest ustawiany na False kiedy aplikacja zostaje wylaczona
+        self._continue_thread_loop = True
+
+        # Watek do podmodulu drugiego:
+        self._processing_thread = threading.Thread(target=self._process_frames, daemon=True)
+        # Watek do podmodulu pierwszego:
+        self._capture_thread = threading.Thread(target=self._capture_frames, daemon=True)
+        
+
+    # Metoda sprawdzajaca czy bufor posredni jest pusty:
+    def _is_buffer_empty(self) -> bool:
+        return self._frame_buffer is None 
+    
+    # Metoda wstawiajaca klatke do bufora posredniego:
+    def _set_buffer(self, frame: MatLike) -> None:
+        self._frame_buffer = frame
+    
+    # Metoda pobierajaca klatke z bufora posredniego ... 
+    # oraz go czyszczaca:
+    def _fetch_buffer(self) -> MatLike|None:
+        frame = self._frame_buffer
+        self._frame_buffer = None
+        return frame
+
+    # Metoda wstawiajaca przygotowana klatke ... 
+    # ... do bufora wyjsciowego:
+    def _set_processed_frame_buffer(self, frame: MatLike) -> None:
+        self._processed_frame_buffer = frame
+
+    # Metoda pobierajaca klatke z bufora wyjsciowego ... 
+    # oraz go czyszczaca:
+    def _fetch_processed_frame_buffer(self) -> MatLike:
+        frame = self._processed_frame_buffer
+        self._processed_frame_buffer = None
+
+        return frame
+
+    # Metoda uruchamiajaca modul (wywolana przez App)
+    def run(self) -> None:
+        self._processing_thread.start()
+        self._capture_thread.start()
+
+    # Metoda implementujaca kroki podmodulu pierwszego:
+    def _capture_frames(self) -> None:
+        while self._continue_thread_loop:
+            if not self._capture_event.is_set():
+                # Czekanie az kamera zostanie ustawiona:
+                self._capture_event.wait()
+                # Jezeli nastapilo wylaczenie aplikacji, zakoncz petle: 
+                if not self._continue_thread_loop:
+                    return
+
+            # ... 
+            # Kroki podmodulu pierwszego
+            # ...
+            
+            # Mechanizm bufora posredniego po stronie wysylajacej klatke
+            with self._buffer_lock:
+                self._set_buffer(frame)
+                self._buffer_not_empty.notify()
+
+    # Metoda implementujaca kroki podmodulu drugiego:
+    def _process_frames(self) -> None:
+        while self._continue_thread_loop:
+            # ... reszta kodu
+
+            # Mechanizm bufora posredniego po stronie pobierajacej klatke
+            with self._buffer_not_empty:
+                while self._is_buffer_empty():
+                    self._buffer_not_empty.wait()
+                    # Jezeli nastapilo wylaczenie aplikacji, zakoncz petle:
+                    if not self._continue_thread_loop:  
+                        return
+
+                frame = self._fetch_buffer() 
+
+            # ... 
+            # Kroki podmodulu pierwszego
+            # ...
+
+            # Mechanizm bufora wyjsciowego po stronie wysylajacej klatke
+            with self._frame_set_lock:
+                self._set_processed_frame_buffer(frame)
+
+    # Metoda wywolywana periodycznie przez GUI ... 
+    # ... za posrednictwem App ... 
+    # w celu poboru gotowej klatki do wyswietlenia ... 
+    # oraz informacji czy kamera dalej dziala
+    def get_processed_frame(self) -> Tuple[bool, Optional[MatLike]]:
+        # Mechanizm bufora wyjsciowego po stronie pobierajacej klatke
+        with self._frame_set_lock:
+            is_capture_on = self._is_capture_on
+        frame = self._fetch_processed_frame_buffer()
+        
+        return is_capture_on, frame
+\end{lstlisting}
