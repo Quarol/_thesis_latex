@@ -132,12 +132,17 @@ Na bazie kodu \ref{lst:inference_interface}, inferencji można dokonać w nastę
     \begin{itemize}
         \item \textbf{conf:} Parametr filtrujący. Jest to tzw. próg ufności (ang. \emph{confidence threshold}) wyrażony liczbą całkowitą z przedziału $[0.00, 1.00]$. Każda detekcja o wyniku pewności detekcji o wartości mniejszej od tego parametru jest odrzucana. 
         \item \textbf{device:} Określa urządzenie, na którym przeprowadzana jest inferencja. W projekcie tym użyto opcji \emph{'cuda'} --- inferencja przeprowadzana jest na procesorze graficznym firmy Nvidia.
-        \item \textbf{classes:} Parametr filtrujący. Jest to lista indeksów klas obiektów. Użycie tego parametru filtruje wyniki inferencji i zwraca wystąpienia tylko podanych klas. 
-        \item \textbf{verbose:} Przyjmuje \emph{true} albo \emph{false}. Określa czy informacje na temat inferencji będą wysyłane do ustawionego strumienia wyjściowego.
+        \item \textbf{classes:} Parametr filtrujący. Jest wyrażany listą indeksów klas obiektów. Określa klasy obiektów, których wykrycia model ma zwracać.
+        Użycie tego parametru filtruje wyniki inferencji i zwraca wystąpienia tylko podanych klas. 
+        \item \textbf{verbose:} Przyjmuje \emph{true} albo \emph{false}. Określa czy informacje na temat inferencji będą wysyłane do ustawionego strumienia wyjściowego. Parametr będzie zawsze ustawiony na \emph{false}.
     \end{itemize}
     Wyniki inferencji są zwracane jako typ \emph{Results}. Zawiera on m.in. liste prostokątów ograniczających. Pobranie koordynatów prostokąta dla pojedyńczego wyniku wymaga jedynie iteracji przez liste prostokątów (\emph{detections.boxes}) a następnie pobrania koordynatów z pojedyńczego prostokąta (\emph{box.xyxy[0]}).
 \end{itemize}
 
 W celu znalezienia informacji o pracy z obiektem wynikowym \emph{Results} oraz zapoznania się z resztą dostępnych parametrów inferencji rekomenduje się podstronę \emph{modes/predict} dokumentacji \cite{yolo_docs}.
 
-Przedstawiony interfejs w przejrzysty i prosty sposób pozwala na użytkowanie modelu YOLOv8n. Jest to kolejny powód wybrania właśnie tej technologii.
+Przedstawiony interfejs w przejrzysty i prosty sposób pozwala na użytkowanie modelu YOLOv8n. Jest to kolejny powód wybrania właśnie tej technologii. 
+
+Niniejszy system umożliwia zmianę wartości progu ufności (\emph{conf}) oraz wykrywanych klas (\emph{classes}).
+
+Warto również wspomnieć o parametrze \emph{imgsz}. Określa on rozmiar obrazu, na którym jest przeprowadzona detekcja obiektów. Obraz wejściowy jest przeskalowywany do tego rozmiaru. W projekcie wykorzystano domyślną wartość parametru, równą 640x640px.

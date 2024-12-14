@@ -16,21 +16,17 @@ Filmy można podzielić na trzy kategorie ze względu na różne obecne w nim ob
     \item człowiek, krzesło
     \item człowiek, fotel
 \end{itemize}
-Krzesło oraz fotel to obiekty, z perspektywy filmów, statyczne --- przez całą długość filmu, na których występują, są one umieszczone w jednej lokalizacji, a inne obiekty nie mają z nimi fizycznej integracji.
-Natomiast człowiek jest obiektem ruchomym. Jest on nieobecny przez pierwszą część każdego filmu. W drugiej części przechodzi on przez próg pomieszczenia, przybliża się do pewnego punktu w obiektywie i na koniec filmu robi jeden pełen obrót w okół własnej osi. 
+Krzesło oraz fotel, z perspektywy filmów, są obiektami statycznymi. Przez całą długość filmu, na których występują, są umieszczone w jednej lokalizacji, a inne obiekty nie wchodzą z nimi w fizyczną interekcję.
+Natomiast człowiek jest obiektem ruchomym. Jest on nieobecny przez pierwszą część każdego filmu. W drugiej części przkracza próg pomieszczenia, zbliża się do pewnego punktu widocznego w obiektywie, a pod koniec filmu wykonuje jeden pełen obrót w okół własnej osi. 
 
-Należy podkreślić ważne kwestie dotyczące nagranych filmów:
+Należy podkreślić kilka istotnych kwestii dotyczących nagranych filmów:
 \begin{itemize}
-    \item Obecne obiekty nie wchodzą ze sobą w integrację --- człowiek podczas ruchu, nie zasłania konturów krzesła oraz fotela.
-    \item Generacja danych do testów nie odbywała się na każdej klatcę nagranego filmu. Użyto tylko klatek przedstawiających pełny kontur obiektów. Pełny kontur człowieka pojawia się w momencie przekroczenia progu wejścia do pomieszczenia. Użyto więc dwóch sekcji każdego filmu:
-    \begin{itemize}
-        \item Sekcja gdy człowiek był całkowicie nieobecny.
-        \item Sekcja od moment przekroczenia progu.
-    \end{itemize}
+    \item Obecne obiekty nie wchodzą ze sobą w interakcję --- człowiek podczas ruchu nie zasłania konturów krzesła ani fotela.
+    \item Generacja danych do testów nie odbywała się na każdej klatce nagranego filmu. Użyto tylko klatek, na których widoczne są pełne kontury obiektów. Pełny kontur człowieka pojawia się w momencie przekroczenia progu wejścia do pomieszczenia. W związku z powyższym, wykorzystano dwie sekcje każdego filmu: sekcję, w której człowiek był całkowicie nieobecny oraz sekcję od momentu przekroczenia progu.
 \end{itemize}
 
 Dla każdej kategorii filmu nagrano cztery warianty z różnym poziomem oświetlenia w pomieszczeniu, co daje łącznie dwanaście plików wideo do analizy. Wizualne różnice między poziomami przedstawiono na rysunku \ref{fig:person_grid} (człowiek), rysunku \ref{fig:chair_grid} (człowiek, krzesło) i rysunku \ref{fig:game_grid} (człowiek, fotel). 
-Dla każdego filmu, korzystając z modelu przestrzeni barw HSV, obliczono średnią jasność oraz nasycenie filmu. Wartości te zaprezentowano w tabeli \ref{tab:saturation-value-table}. Obliczenia przeprowadzono poprzez wyznaczenie średniej wartości jasności oraz nasycenia dla każdej klatki obrazu na podstawie wszystkich pikseli, a następnie wyznaczając średnią z uzyskanych wartości dla wszystkich klatek w filmie.
+Dla każdego filmu, korzystając z modelu przestrzeni barw HSV, obliczono średnią jasność oraz nasycenie. Wartości te zaprezentowano w tabeli \ref{tab:saturation-value-table}. Obliczenia polegały na wyznaczeniu średniej wartości jasności i nasycenia dla każdej klatki obrazu na podstawie wszystkich pikseli. Następnie wyznaczono średnią z uzyskanych wartości dla wszystkich klatek w filmie.
 \input{r_test_dokładności/tabele/jasnosc_saturacja}
 \input{r_test_dokładności/tabele/person_grid}
 \input{r_test_dokładności/tabele/chair_grid}
@@ -43,8 +39,8 @@ Dla każdego filmu, korzystając z modelu przestrzeni barw HSV, obliczono średn
 
 
 \subsection{Metryki i dane wynikowe używane w testach}
-Na podstawie opisanych dwunastu plików wideo wygenerownao dane do analizy w testach dla każdego z nich. Dane te to podstawowe metryki używane w klasyfikacji binarnej. Są to: wynik prawdziwy pozytywny (TP), wynik prawdziwy negatywny (TN), wynik fałszywy pozytywny (FP), wynik fałszywy negatywny (FN). 
-Zaprojektowane testy sprawdzają tylko jedną klasę na test --- np. dla ewaluacji klasyfikacji klasy \emph{człowiek}, ignorowane są wykrycia innych klas. Co więcej, w niniejszym systemie nacisk kładziony jest na alarmowanie użytkownika o obecności obiektu, dlatego też uznano, iż więcej niż jedna detekcja klasy będzie przypisana do tej samej metryki co dotekcja pojedyńczego obiektu. 
+Na podstawie opisanych dwunastu plików wideo wygenerowano dane do analizy w testach dla każdego z nich. Dane te to podstawowe metryki używane w klasyfikacji binarnej. Są to: wynik prawdziwy pozytywny (TP), wynik prawdziwy negatywny (TN), wynik fałszywy pozytywny (FP), wynik fałszywy negatywny (FN). 
+Zaprojektowane testy sprawdzają tylko jedną klasę na test --- np. dla ewaluacji klasyfikacji klasy \emph{człowiek}, ignorowane są wykrycia innych klas. Co więcej, w niniejszym systemie nacisk kładziony jest na alarmowanie użytkownika o obecności obiektu, dlatego też uznano, iż więcej niż jedna detekcja klasy będzie przypisana do tej samej metryki co detekcja pojedynczego obiektu. 
 
 Biorąc to pod uwagę, definicję metryk skonstruowano następująco: \\ \\ \noindent
 Znaczenie skrótów z tabeli \ref{tab:saturation-value-table}: \\

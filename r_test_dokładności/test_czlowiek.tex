@@ -10,7 +10,7 @@ Niniejszy podrozdział przedstawia różne badania, których celem jest ewaluacj
 
 \subsection{Zachowanie modelu dla różnych poziomów oświetlenia}
 \label{sec:test-AUC}
-W sekcji tej oceniono osiągi modelu dla każdego poziomu oświetlania, a następnie porównano jest ze sobą. Do wizualizacji wyników posłużono się krzywą ROC, zaś do oceny rezultatów dla poziomu jasności -- wartością AUC.
+W sekcji tej oceniono osiągi modelu dla każdego poziomu oświetlania, a następnie porównano jest ze sobą. Do wizualizacji wyników posłużono się krzywą ROC, zaś do oceny rezultatów dla poziomu oświetlenia -- wartością AUC.
 
 Krzywa ROC (ang. \emph{Receiver operating characteristic}) to graficzna reprezentacja wykorzystywana do ewaluacji binarnej klasyfikacji modelu. Jest to zbiór połączonych ze sobą punktów o współrzędnych $(x, y)$. Liczba narysowanych punktów odpowiada liczbie przetestowanych progów ufności. Współrzędna $x$ to metryka FPR, a współrzędna $y$ -- TPR. Przykład wyznaczonych punktów pokazuje tabela \ref{tab:wyznaczanie_ROC}. 
 \input{r_test_dokładności/tabele/przyklad_ROC.tex}
@@ -30,8 +30,8 @@ FPR (ang \emph{false positive rate}) opisuje sytuację odwrotną do TPR --- anal
     \label{eq:FPR}
 \end{equation}
 
-Podsumowując te informacje, ROC ilustruje balans między czułością, a ostrożnością modelu. Do interpretacji krzywej używa się wartości skalarnej AUC. AUC (ang. \emph{area under curve}) jest to pole pod wykresem krzywej ROC. Jest to wartość z przedziału [0, 1]. Im większa wartość, tym lepszy wynik modelu. AUC równa 1 oznacza, że model idealnie wskazuje kiedy obiekt się pojawił oraz nigdy nie produkuje fałszywych wyników gdy obiekt jest nieobecny. Wartość 0.5 określana jest jako wynik uzyskany przez tzw. losowego klasyfikatora (ang. \emph{random classifier}). Losowy klasyfikator definiuje się jako klasyfikator losowo generujący wykrycia bądź nie (zakładając, że prawdopodobieństwo wykrycia to 50\%). Obrazuje się go jako prostą, przekątną linią, biegnącą od lewego-dolnego rogu wykresu do prawego-górnego. Modele uzyskujące AUC mniejsze niż 0.5 są uznawane za nieskuteczne. 
-Wykresy dla poziomów kolejnych poziomów oświetlenia przedstawiono na rysunkach \ref{fig:ROC-1}, \ref{fig:ROC-2}, \ref{fig:ROC-3}, \ref{fig:ROC-4}. Porównanie AUC wszystkich poziomów oświetlenia ukazane jest na wykresie na rysunku \ref{fig:AUC}.
+Podsumowując podane informacje, ROC ilustruje balans między czułością a ostrożnością modelu. Do interpretacji krzywej używa się wartości skalarnej AUC. AUC (ang. \emph{area under curve}) jest to pole pod wykresem krzywej ROC. Jest to wartość z przedziału [0, 1]. Im większa wartość, tym lepszy wynik modelu. AUC równa 1 oznacza, że model idealnie wskazuje kiedy obiekt się pojawił oraz nigdy nie generuje fałszywych wyników gdy obiekt jest nieobecny. Wartość 0.5 określana jest jako wynik uzyskany przez tzw. losowego klasyfikatora (ang. \emph{random classifier}). Losowy klasyfikator definiuje się jako klasyfikator losowo generujący wykrycia bądź nie (zakładając, że prawdopodobieństwo wykrycia to 50\%). Obrazuje się go jako prostą, przekątną linią, biegnącą od lewego-dolnego rogu wykresu do prawego-górnego. Modele uzyskujące AUC mniejsze niż 0.5 są uznawane za nieskuteczne. 
+Wykresy dla poziomów kolejnych poziomów oświetlenia przedstawiono na rysunkach \ref{fig:ROC-1}, \ref{fig:ROC-2}, \ref{fig:ROC-3}, \ref{fig:ROC-4}. Porównanie wartości AUC wszystkich poziomów oświetlenia ukazane jest na wykresie na rysunku \ref{fig:AUC}.
 
 
 
@@ -96,8 +96,8 @@ Tak jak to jednak podkreślono, AUC jest bardzo ogólną miarą, więc w celu do
 \subsection{Analiza wpływu progu ufności}
 W tej sekcji skupiono się badaniu optymalnego ustawienia progu ufności w aplikacjach systemu gdzie powinien on pełnić role asystenta. W tym kontekście zależy nam na możliwie jak jak największej redukcji wyników fałszywych pozytywnych (FP). 
 
-Opierając się na wnioskach z poprzedniego badania do dalszych testów nie wykorzystano filmu z poziomem oświetlenia nr 4. 
-Ponadto, z racji podobnych wyników dla nr 1 i nr 2 zdecydowano, iż test ten użyje tylko poziomów nr 1 (przykład dobrego oświetlenia) i nr 3 (przykład problematycznego oświetlenia). 
+Opierając się na wnioskach z poprzedniego badania, do dalszych testów nie wykorzystano filmu z poziomem oświetlenia nr 4. 
+Ponadto, z racji podobnych wyników dla poziomów nr 1 i nr 2 zdecydowano, iż test ten użyje tylko poziomu nr 1 (przykład dobrego oświetlenia). Przeanalizowano również wyniki dla poziomu nr 3 jako przykład problematycznego oświetlenia. 
 
 Poziom 1 odpowiadać może przytoczonemu powyżej użyciu w sklepie --- minimalizacja sytuacji kiedy pracownik wychodzi z zaplecza do nieobecnego w rzeczywistości klienta.
 Natomiast poziom nr 3 może odpowiadać sytuacji lekko oświetlonego wejścia do domu w nocy --- minimalizacja sytuacji, kiedy użytkownik jest niepotrzebnie budzony przez alarm. Zestawy danych (klatek) nie są zbalansowane ani względem filmów, ani względem klatek z obecnym i nieobecnym obiektem. Dlatego też nie zostały użyte dalsze metryki i skupiono się analizie podstawowych metryk klasyfikacji binarnej (TP, TN, FP, FN). 
