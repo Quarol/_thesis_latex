@@ -1,6 +1,6 @@
 \subsection{Żródło wideo}
 \label{sec:zrodlo_wideo}
-Źródło wideo to nagrane w domowych warunkach, autorskie, krótkie filmy. Filmy nagrano na kamerze o rozdzielczości 640x480 pikseli. Obiektyw kamery jest statycznie usytuowany w tej samej lokalizacji dla każdego filmu. Obiektyw jest skierowany na wejście do pomieszczenia, w którym kamera się znajduje. Wygląd pomieszczenia jest przedstawiony na ryskunku \ref{fig:test-dokladnosc-scena}.
+Źródło wideo to nagrane w domowych warunkach, autorskie, krótkie filmy. Filmy nagrano na kamerze o rozdzielczości 640x480 pikseli. Obiektyw kamery jest statycznie usytuowany w tej samej lokalizacji dla każdego filmu i skierowany na wejście do pomieszczenia, w którym znajduje się kamera. Wygląd pomieszczenia przedstawiono na rysunku \ref{fig:test-dokladnosc-scena}.
 
 \begin{figure}[H]
     \centering
@@ -16,8 +16,8 @@ Filmy można podzielić na trzy kategorie ze względu na różne obecne w nim ob
     \item człowiek, krzesło
     \item człowiek, fotel
 \end{itemize}
-Krzesło oraz fotel, z perspektywy filmów, są obiektami statycznymi. Przez całą długość filmu, na których występują, są umieszczone w jednej lokalizacji, a inne obiekty nie wchodzą z nimi w fizyczną interekcję.
-Natomiast człowiek jest obiektem ruchomym. Jest on nieobecny przez pierwszą część każdego filmu. W drugiej części przkracza próg pomieszczenia, zbliża się do pewnego punktu widocznego w obiektywie, a pod koniec filmu wykonuje jeden pełen obrót w okół własnej osi. 
+Krzesło oraz fotel, z perspektywy filmów, są obiektami statycznymi. Przez całą długość filmu są umieszczone w jednej lokalizacji, a inne obiekty nie wchodzą z nimi w fizyczną interakcję.
+Natomiast człowiek jest obiektem ruchomym. Jest on nieobecny przez pierwszą część każdego filmu. W drugiej części przekracza próg pomieszczenia, zbliża się do pewnego punktu widocznego w obiektywie, a pod koniec filmu wykonuje jeden pełen obrót wokół własnej osi. 
 
 Należy podkreślić kilka istotnych kwestii dotyczących nagranych filmów:
 \begin{itemize}
@@ -25,7 +25,7 @@ Należy podkreślić kilka istotnych kwestii dotyczących nagranych filmów:
     \item Generacja danych do testów nie odbywała się na każdej klatce nagranego filmu. Użyto tylko klatek, na których widoczne są pełne kontury obiektów. Pełny kontur człowieka pojawia się w momencie przekroczenia progu wejścia do pomieszczenia. W związku z powyższym, wykorzystano dwie sekcje każdego filmu: sekcję, w której człowiek był całkowicie nieobecny oraz sekcję od momentu przekroczenia progu.
 \end{itemize}
 
-Dla każdej kategorii filmu nagrano cztery warianty z różnym poziomem oświetlenia w pomieszczeniu, co daje łącznie dwanaście plików wideo do analizy. Wizualne różnice między poziomami przedstawiono na rysunku \ref{fig:person_grid} (człowiek), rysunku \ref{fig:chair_grid} (człowiek, krzesło) i rysunku \ref{fig:game_grid} (człowiek, fotel). 
+Dla każdej kategorii filmu nagrano cztery warianty z różnym poziomem oświetlenia w pomieszczeniu, co daje łącznie dwanaście plików wideo do analizy. Wizualne różnice między poziomami przedstawiono na rysunku \ref{fig:person_grid} (człowiek), rysunku \ref{fig:chair_grid} (człowiek, krzesło) oraz rysunku \ref{fig:game_grid} (człowiek, fotel). 
 Dla każdego filmu, korzystając z modelu przestrzeni barw HSV, obliczono średnią jasność oraz nasycenie. Wartości te zaprezentowano w tabeli \ref{tab:saturation-value-table}. Obliczenia polegały na wyznaczeniu średniej wartości jasności i nasycenia dla każdej klatki obrazu na podstawie wszystkich pikseli. Następnie wyznaczono średnią z uzyskanych wartości dla wszystkich klatek w filmie.
 \input{r_test_dokładności/tabele/jasnosc_saturacja}
 \input{r_test_dokładności/tabele/person_grid}
@@ -45,7 +45,7 @@ Zaprojektowane testy sprawdzają tylko jedną klasę na test --- np. dla ewaluac
 Biorąc to pod uwagę, definicję metryk skonstruowano następująco: \\ \\ \noindent
 Znaczenie skrótów z tabeli \ref{tab:saturation-value-table}: \\
 $\emptyset$ -- brak wystąpienia obiektu wykrywanej klasy \\
-x -- pojedyńcze wystąpienie obiektu wykrywanej klasy \\
+x -- pojedyncze wystąpienie obiektu wykrywanej klasy \\
 n*x -- wielokrotne wystąpienie obiektu wykrywanej klasy
 \input{r_test_dokładności/tabele/opis_metryk}
 
