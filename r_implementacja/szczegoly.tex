@@ -1,11 +1,11 @@
 \section{Szczegóły implementacyjne}
 \label{chap:szczegoly-implementacji}
-W sekcji tej opisano implementacje wielowątkowego podejścia architektonicznego. Przedstawiono argumenty za wybraniem tego typu architektury, rozwiazanie problemów przez nią wywoływanych oraz uzasadnienie innych działań zastosowanych w celu poprawy wydajności systemu.  
+W sekcji tej opisano implementacje wielowątkowego podejścia architektonicznego. Przedstawiono argumenty za wybraniem tego typu architektury, rozwiazanie problemów przez nią generowanych oraz uzasadnienie innych działań zastosowanych w celu poprawy wydajności systemu.  
 
-\subsection{Nakreślenie powodu użycia architektury wielowątkowej}
+\subsection{Uwagi dotyczące architektury systemu}
 Pierwsza iteracja oprogramowania była oparta na architekturze jednowątkowej. Sekwencyjnie wykonywano kolejne metody w nieskończonej pętli: pobór klatki z kamery, detekcja obiektów, alarmowanie dźwiękowe, wizualizacja obiektów oraz wyświetlenie klatki w wyświetlaczu graficznego interfejsu użytkownika.
 
-Na tym etapie rodziału warto pochylić się nad działaniem modułu graficznego użytego w klasie \emph{GUI} --- tkinter. 
+Na tym etapie rodziału warto zrozumieć działanie modułu graficznego użytego w klasie \emph{GUI} --- tkinter. 
 Jest on podstawą i jedyną wykorzystywaną technologią w implementacji panelu sterowania. Moduł ten dostarcza graficzne komponenty takie jak suwak, wykorzystany do zmiany progu ufności; pola wyboru (ang. \emph{checkboxes}) wraz z paskiem przewijania, zastosowane do sekcji z wyborem wykrywanych klas obiektów; oraz menu z przyciskami, do wyboru źródła wideo. 
 
 Aby móc użytkować interfejs na bazie modułu, wymagane jest wywołanie głównej pętli tkinter (ang .\emph{mainloop}). Pętla opiera się ona na architekturze wydarzeniowej (ang. \emph{event-driven architecture}) działającej w ramach jednego, głównego wątku aplikacji. Poprzez wydarzenie rozumie się zdefiniowaną w module integrację z komponentem np. kliknięcie na przycisk. Zadaniem pętli jest zareagowanie na wydarzenia w sposób zfefiniowany przez moduł (np. wypełnienie przycisku kolorem po kliknięciu) oraz wykonanie kodu, który programista podłączył pod dane wydarzenia (np. wywołanie metody ustawiającej źródło wideo). Przykład na bazie kodu źródłowego pokazano w listingu \ref{lst:tkinter-event-loop}.

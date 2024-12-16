@@ -8,7 +8,7 @@ Poprzez czas potrzebny do wyświetlenia klatki rozumie się szereg czynności. J
 
 W teście zmierzono całkowity czas do wyświetlenia wszystkich klatek oraz czas potrzebny do wyświetlenia pojedyńczej klatki (pięć tysięcy pomiarów na każdą rozdzielczość). Czas zmierzono poprzez pobranie w dwóch punktach -- początkowym i końcowym -- kodu źródłowego aktualnego czasu w systemie operacyjnym i obliczeniu różnicy jaka wystąpiła między tymi punktami. 
 
-Dla pomiaru czasu całkowitego punkt początowy umiesczono po wyświetleniu przez GUI pierwszej klatki (klatka zerowa --- niewliczona do pomiaru). Punkt końcowy zmierzono po wyświetleniu ostatniej klatki.
+Dla pomiaru czasu całkowitego punkt początowy umieszczono po wyświetleniu przez GUI pierwszej klatki (klatka zerowa --- niewliczona do pomiaru). Punkt końcowy zmierzono po wyświetleniu ostatniej klatki.
 Dla pojedyńczego pomiaru punkt początkowy jest taki sam dla pierwszej uwzględnionej klatki. Punkt końcowy jest ustawiany po wyświetleniu następnej klatki, w tym momencie też punkt końcowy staje się punktem początkowym dla pomiaru dla kolejnej klatki.
 Pomiary czasu całkowitego dla zbadanych rozdzielczości kamery przedstawiono w tabeli \ref{tab:czas-calkowity-5000klatek}. Tabela uwzględnia zmierzony czas całkowity oraz obliczony na jej podstawie średni czas na klatkę oraz liczbę klatek na sekundę (FPS). Średni czas na klatkę obliczono poprzez podzielienie liczby klatek (5000) przez czas całkowity, natomiast FPS poprzez podzielenie liczby klatek przez czas całkowity.  
 \input{r_test_szybkosci/tabele/5000_calkowiecie.tex}

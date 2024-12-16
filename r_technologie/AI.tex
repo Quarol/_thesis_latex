@@ -1,7 +1,7 @@
 \subsection{Wprowadzenie do detekcji obiektów}
 Detekcja obiektów to podstawowe zadanie dziedziny wizji komputerowej, które objejmuje klasyfikowanie oraz lokalizowanie obiektów na obrazie. W przeciwieństwie do zadania klasyfikacji obrazów, które dostarcza informacji o wykrytych klasach obiektów, detekcja obiektów zapewnia zarówno klasyfikację, jak i lokalizację przestrzenną. Detekcja obiektów znajduje zastosowanie w wielu obszarach, takich jak: pojazdy autonomiczne \cite{pojazdy_autonomiczne}, obrazowanie w medycynie \cite{obrazowanie_w_medycynie}, monitoring wizyjny \cite{monitoring_wizyjny}, monitoring dzikiej przyrody \cite{wildlife}, zarządzanie sprzedażą detaliczną i zapasami \cite{sklepy}.
 
-\subsection{Ewolucja technik detekcji obiektów}
+\subsection{Rozwój technik detekcji obiektów}
 Wczesne metody detekcji obiektów opierały się na ręcznie zaprojektowanych cechach i tradycyjnych technikach uczenia maszynowego. Przykłady obejmują rozwiązania oparte na kaskadach Haara \cite{haar} lub histogramie zorientowanych gradientów (HOG) \cite{hog}, które następnie klasyfikowano za pomocą algorytmów takich jak maszyny wektorów nośnych (SVM) \cite{svm}. Ówcześnie podejścia te były przełomowe, wymagały jednak dużych nakładów obliczeniowych.
 
 Zastosowanie uczenia głębokiego zrewolucjonizowało detekcję obiektów, a konwolucyjne sieci neuronowe (CNN) stały się podstawą nowoczesnych metod. Punktem przełomowym było pojawienie się tzw. CNN opartej na regionach (R-CNN) w 2014 r. \cite{RCNN}. Kolejne modele z rodziny R-CNN, opublikowane do 2016 r., to \emph{Fast R-CNN} \cite{Fast-RCNN} oraz \emph{Faster R-CNN} \cite{Faster-RCNN}.
@@ -72,9 +72,9 @@ Ze względu na dynamikę rozwoju, w chwili wyboru wersjii dla niniejszego system
     \label{fig:yolo8-sizes}
 \end{figure}
 
-Ponieważ zaprojektowany system będzie operował na sprzęcie komputerowym (z naciskiem na kartę graficzną) posiadanym przez przeciętnego użytkownika, zdecydowano się postawić na szybkość modelu --- stąd wybór YOLOv8n. Zaletą YOLOv8 jest również duża liczba dostępnych klas obiektów dla niedostrojonego (ang. \emph{fine-tuned}) modelu -- jest ich 80. Model został przetrenowany na zestawie danych COCO. Więcej informacji nt. zestawu danych znajduje się tutaj \cite{COCO_docs}.
+Ponieważ zaprojektowany system będzie operował na sprzęcie komputerowym (z naciskiem na kartę graficzną) posiadanym przez przeciętnego użytkownika, zdecydowano się postawić na szybkość modelu --- stąd wybór YOLOv8n. Zaletą YOLOv8 jest również duża liczba dostępnych klas obiektów dla niedostrojonego (ang. \emph{fine-tuned}) modelu -- jest ich 80. Zbiór dostępnych klas bazuje na zestawie danych COCO \cite{COCO_docs}. 
 
-Podsumowując, użytym modelem w tym projekcie będzie podstawowa, niedostrajana wersja YOLOv8n. 
+Podsumowując, użytym modelem w tym projekcie będzie podstawowa, niedostrojona wersja YOLOv8n. 
 
 
 
